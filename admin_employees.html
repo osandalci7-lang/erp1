@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="employees-header">
+    <h1>Employees <span class="employee-count">({{count}} active)</span></h1>
+
+    <div class="employee-filters">
+        <select onchange="location = this.value;">
+            <option value="/admin/employees">All Employees</option>
+            <option value="/admin/employees?status=Active">Active</option>
+            <option value="/admin/employees?status=Passive">Passive</option>
+        </select>
+
+        <select onchange="location = this.value;">
+            <option>Department</option>
+            <option value="/admin/employees?department=Operations">Operations</option>
+            <option value="/admin/employees?department=Engineering">Engineering</option>
+            <option value="/admin/employees?department=HSEQ">HSEQ</option>
+        </select>
+
+        <select onchange="location = this.value;">
+            <option>Position</option>
+            <option value="/admin/employees?position=Welder">Welder</option>
+            <option value="/admin/employees?position=Fitter">Fitter</option>
+            <option value="/admin/employees?position=Project Manager">Project Manager</option>
+        </select>
+    </div>
+</div>
+
+<table class="employee-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for emp in employees %}
+        <tr onclick="window.location='/admin/employee/{{emp[0]}}'" class="employee-row">
+            <td>{{emp[0]}}</td>
+            <td>{{emp[1] or ''}}</td>
+            <td>{{emp[2] or ''}}</td>
+            <td>{{emp[3] or ''}}</td>
+            <td>{{emp[4] or ''}}</td>
+            <td>{{emp[5] or ''}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
+
+<a class="register-btn" href="/admin/employee/edit/new">+ Add Employee</a>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

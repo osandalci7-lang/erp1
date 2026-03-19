@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
+  <h1 style="margin:0;">Permit System</h1>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <a href="/permits/confined-space/new" style="background:#0b1f4d;color:white;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;">+ Confined Space</a>
+    <a href="/permits/hotwork/new" style="background:#7f1d1d;color:white;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;">🔥 Hot Work</a>
+    <a href="/permits/hdr/new" style="background:#14532d;color:white;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;">💧 HDR / Paint Spray</a>
+  </div>
+</div>
+
+{% if permits %}
+<div style="background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <thead>
+      <tr style="background:#f9fafb;border-bottom:2px solid #e5e7eb;">
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">#</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Type</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Vessel</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Location</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Filled by</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Date</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Status</th>
+        <th style="padding:12px 16px;text-align:left;font-weight:600;color:#374151;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in permits %}
+      <tr style="border-bottom:1px solid #f3f4f6;">
+        <td style="padding:12px 16px;color:#6b7280;">{{ p[0] }}</td>
+        <td style="padding:12px 16px;">
+          <span style="background:#eff6ff;color:#1d4ed8;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;">
+            {{ p[1] | replace('_', ' ') | title }}
+          </span>
+        </td>
+        <td style="padding:12px 16px;font-weight:600;">{{ p[2] or '-' }}</td>
+        <td style="padding:12px 16px;">{{ p[3] or '-' }}</td>
+        <td style="padding:12px 16px;">{{ p[4] or '-' }}</td>
+        <td style="padding:12px 16px;color:#6b7280;font-size:13px;">{{ p[5][:16] if p[5] else '-' }}</td>
+        <td style="padding:12px 16px;">
+          {% if p[6] == 'pending' %}
+          <span style="background:#fef9c3;color:#713f12;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;">⏳ Pending</span>
+          {% elif p[6] == 'approved' %}
+          <span style="background:#d1fae5;color:#065f46;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;">✅ Approved</span>
+          {% elif p[6] == 'rejected' %}
+          <span style="background:#fee2e2;color:#991b1b;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;">❌ Rejected</span>
+          {% endif %}
+        </td>
+        <td style="padding:12px 16px;">
+          <a href="/permits/{{ p[0] }}" style="color:#0b1f4d;text-decoration:none;font-weight:600;font-size:13px;">View</a>
+          {% if p[6] == 'pending' and (has_permission(user, 'admin_full_access') or user['position'] in ['HSEQ Manager', 'HSEQ Officer', 'Operation Manager']) %}
+          &nbsp;|&nbsp;
+          <a href="/permits/{{ p[0] }}/approve" style="color:#059669;text-decoration:none;font-weight:600;font-size:13px;">Approve</a>
+          &nbsp;|&nbsp;
+          <a href="/permits/{{ p[0] }}/reject" style="color:#dc2626;text-decoration:none;font-weight:600;font-size:13px;">Reject</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div style="background:white;border-radius:12px;padding:48px;text-align:center;color:#6b7280;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+  <div style="font-size:48px;margin-bottom:16px;">📋</div>
+  <h3 style="margin:0 0 8px;color:#374151;">No permits yet</h3>
+  <p style="margin:0 0 20px;">Create your first permit to get started.</p>
+  <a href="/permits/confined-space/new" style="background:#0b1f4d;color:white;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:600;">+ New Permit</a>
+</div>
+{% endif %}
+
+{% endblock %}

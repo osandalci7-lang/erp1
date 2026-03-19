@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norden Safety</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial, sans-serif;
+            background:#f3f4f6;
+            color:#111827;
+        }
+
+        .public-topbar{
+            background:#0b1f4d;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:20px 32px;
+        }
+
+        .public-logo a{
+            color:white;
+            text-decoration:none;
+            font-size:28px;
+            font-weight:700;
+        }
+
+        .public-menu{
+            display:flex;
+            gap:24px;
+            align-items:center;
+        }
+
+        .public-menu a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+            font-weight:500;
+        }
+
+        .public-page{
+            min-height:calc(100vh - 80px);
+            padding:40px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="public-topbar">
+        <div class="public-logo">
+            <a href="/">Norden Safety</a>
+        </div>
+
+        <div class="public-menu">
+            <a href="/news">News</a>
+            <a href="?lang=en">EN</a>
+            <a href="?lang=nl">NL</a>
+        </div>
+    </div>
+
+    <div class="public-page">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

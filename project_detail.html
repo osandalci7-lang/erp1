@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+  <h1 style="margin:0;">Project Detail</h1>
+  {% if has_permission(user, 'admin_full_access') %}
+  <a href="/project/{{ project[0] }}/delete" onclick="return confirm('Are you sure you want to delete this project? This cannot be undone.')" style="background:#ef4444;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">🗑️ Delete Project</a>
+  {% endif %}
+</div>
+
+<div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+    <h2 style="margin-top:0;color:#0b1f4d;">{{ project[1] }} - {{ project[2] }}</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px;">
+        <div><strong>Ship:</strong> {{ project[8] or '-' }}</div>
+        <div><strong>Status:</strong> {{ project[6] or '-' }}</div>
+        <div><strong>Tonnage:</strong> {{ project[9] or '-' }}</div>
+        <div><strong>Flag:</strong> {{ project[10] or '-' }}</div>
+        <div><strong>Berth:</strong> {{ project[11] or '-' }}</div>
+        <div><strong>Company:</strong> {{ project[12] or '-' }}</div>
+        <div><strong>Customer:</strong> {{ (project[13] or '') ~ ' ' ~ (project[14] or '') }}</div>
+        <div><strong>Created At:</strong> {{ project[7] or '-' }}</div>
+    </div>
+</div>
+
+<div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+    <h3 style="margin-top:0;">Update Project</h3>
+
+    <form method="post" action="/project/update/{{ project[0] }}">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;">
+            <div>
+                <label>Project Code</label>
+                <input type="text" name="project_code" value="{{ project[1] }}" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div>
+                <label>Project Title</label>
+                <input type="text" name="project_title" value="{{ project[2] or '' }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div>
+                <label>Ship</label>
+                <select name="ship_id" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    {% for ship in ships %}
+                    <option value="{{ ship[0] }}" {% if project[3] == ship[0] %}selected{% endif %}>{{ ship[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Customer</label>
+                <select name="customer_id" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    {% for customer in customers %}
+                    <option value="{{ customer[0] }}" {% if project[4] == customer[0] %}selected{% endif %}>{{ customer[1] }} {{ customer[2] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Status</label>
+                <select name="status" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    <option value="Open" {% if project[6] == "Open" %}selected{% endif %}>Open</option>
+                    <option value="In Progress" {% if project[6] == "In Progress" %}selected{% endif %}>In Progress</option>
+                    <option value="Waiting Customer" {% if project[6] == "Waiting Customer" %}selected{% endif %}>Waiting Customer</option>
+                    <option value="Closed" {% if project[6] == "Closed" %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Update Project
+            </button>
+        </div>
+    </form>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">Add Daily Note / Request</h3>
+
+        <form method="post" action="/project/{{ project[0] }}/note/add">
+            <div style="margin-bottom:16px;">
+                <label>Type</label>
+                <select name="note_type" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    <option value="Daily Update">Daily Update</option>
+                    <option value="Request">Request</option>
+                    <option value="Remark">Remark</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>Note</label>
+                <textarea name="note_text" rows="6" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;"></textarea>
+            </div>
+
+            <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Publish Note
+            </button>
+        </form>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">Upload Project Document</h3>
+
+        <form method="post" action="/project/{{ project[0] }}/document/upload" enctype="multipart/form-data">
+            <div style="margin-bottom:16px;">
+                <label>Document Type</label>
+                <select name="document_type" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    <option value="Drawing">Drawing</option>
+                    <option value="Order Confirmation">Order Confirmation</option>
+                    <option value="Report">Report</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>Title</label>
+                <input type="text" name="title" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>Visible to Customer</label>
+                <select name="visible_to_customer" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>File</label>
+                <input type="file" name="file" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Upload Document
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <h3 style="margin-top:0;">Daily Notes / Requests</h3>
+
+    {% if notes %}
+        {% for note in notes %}
+        <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+            <div style="font-weight:700;color:#0b1f4d;">{{ note[2] }} - {{ note[1] }}</div>
+            <div style="margin-top:8px;white-space:pre-wrap;">{{ note[3] }}</div>
+            <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ note[4] }}</div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No notes added yet.</p>
+    {% endif %}
+</div>
+
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <h3 style="margin-top:0;">Project Documents</h3>
+
+    {% if documents %}
+        {% for doc in documents %}
+        <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+            <div style="font-weight:700;color:#0b1f4d;">{{ doc[1] }} - {{ doc[2] }}</div>
+            <div style="margin-top:8px;">Uploaded by: {{ doc[5] }}</div>
+            <div style="margin-top:8px;">Visible to customer: {% if doc[4] == 1 %}Yes{% else %}No{% endif %}</div>
+            <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ doc[6] }}</div>
+            <div style="margin-top:12px;">
+                <a href="/static/project_documents/{{ doc[3] }}" target="_blank" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">View</a>
+                <a href="/static/project_documents/{{ doc[3] }}" download style="background:#16a34a;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Download</a>
+                <a href="/project/document/delete/{{ doc[0] }}/{{ project[0] }}" style="background:#b91c1c;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No project documents uploaded yet.</p>
+    {% endif %}
+</div>
+
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <h3 style="margin-top:0;">Customer Uploaded Documents</h3>
+
+    {% if customer_uploads %}
+        {% for upload in customer_uploads %}
+        <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+            <div style="font-weight:700;color:#0b1f4d;">{{ upload[1] }}</div>
+            <div style="margin-top:8px;">{{ upload[2] or '' }}</div>
+            <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ upload[4] }}</div>
+            <div style="margin-top:12px;">
+                <a href="/static/customer_project_uploads/{{ upload[3] }}" target="_blank" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">View</a>
+                <a href="/static/customer_project_uploads/{{ upload[3] }}" download style="background:#16a34a;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No customer documents uploaded yet.</p>
+    {% endif %}
+</div>
+
+
+<div style="background:white;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-top:24px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h3 style="margin:0;color:#0b1f4d;">📋 Permits</h3>
+    <div style="display:flex;gap:8px;">
+      <a href="/permits/confined-space/new" style="background:#0b1f4d;color:white;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;">+ Confined Space</a>
+      <a href="/permits/hotwork/new" style="background:#7f1d1d;color:white;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;">🔥 Hot Work</a>
+      <a href="/permits/hdr/new" style="background:#14532d;color:white;text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;">💧 HDR</a>
+    </div>
+  </div>
+  {% if project_permits %}
+  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <thead>
+      <tr style="background:#f3f4f6;">
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">#</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Type</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Location</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Filled By</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Date</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Status</th>
+        <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for permit in project_permits %}
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td style="padding:10px 12px;color:#6b7280;">{{ permit[0] }}</td>
+        <td style="padding:10px 12px;">
+          {% if permit[1] == 'confined_space' %}<span style="background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">Confined Space</span>
+          {% elif permit[1] == 'hotwork' %}<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">🔥 Hot Work</span>
+          {% elif permit[1] == 'hdr' %}<span style="background:#dcfce7;color:#14532d;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:600;">💧 HDR</span>
+          {% else %}<span style="background:#f3f4f6;color:#374151;padding:3px 8px;border-radius:6px;font-size:12px;">{{ permit[1] }}</span>{% endif %}
+        </td>
+        <td style="padding:10px 12px;">{{ permit[2] or '-' }}</td>
+        <td style="padding:10px 12px;">{{ permit[5] or '-' }}</td>
+        <td style="padding:10px 12px;color:#6b7280;font-size:13px;">{{ permit[4] or '-' }}</td>
+        <td style="padding:10px 12px;">
+          {% if permit[3] == 'approved' %}<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;">✅ Approved</span>
+          {% elif permit[3] == 'rejected' %}<span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;">❌ Rejected</span>
+          {% else %}<span style="background:#fef9c3;color:#713f12;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;">⏳ Pending</span>{% endif %}
+        </td>
+        <td style="padding:10px 12px;">
+          <a href="/permits/{{ permit[0] }}" style="color:#2563eb;font-weight:600;text-decoration:none;font-size:13px;">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="color:#6b7280;font-size:14px;">No permits linked to this project yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

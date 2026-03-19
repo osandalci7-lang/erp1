@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+  <div style="background:#7f1d1d;color:white;padding:16px 20px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;opacity:0.7;">Ver. 20/09/2024</div>
+      <h2 style="margin:4px 0 0;font-size:18px;">✏️ EDIT — HOTWORK PERMIT #{{ permit.id }}</h2>
+    </div>
+    <div style="text-align:right;font-size:12px;opacity:0.8;">Norden Shipyard SMS</div>
+  </div>
+  <div style="background:#fef9c3;border-left:4px solid #f59e0b;padding:12px 16px;font-size:13px;color:#713f12;font-weight:600;">
+    ⚠️ Editing this permit will reset it to PENDING status and require re-approval.
+  </div>
+  {% set hw_data = permit.atm_measurements | fromjson if permit.atm_measurements else {} %}
+<form method="post" action="/permits/{{ permit.id }}/edit" style="background:white;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 16px;font-size:14px;text-transform:uppercase;">General Information</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Vessel *</label>
+        <select name="ship_id" required style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+          <option value="">-- Select vessel --</option>
+          {% for ship in ships %}<option value="{{ ship[0] }}" {% if permit.ship_id == ship[0] %}selected{% endif %}>{{ ship[1] }}</option>{% endfor %}
+        </select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project</label>
+        <select name="project_id" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+          <option value="">-- Select project --</option>
+          {% for project in projects %}<option value="{{ project[0] }}" {% if permit.project_id == project[0] %}selected{% endif %}>{{ project[1] }}</option>{% endfor %}
+        </select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Location *</label>
+        <input type="text" name="location" required value="{{ permit.location or '' }}" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+      </div>
+      <div style="margin-top:14px;"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Description of work *</label>
+      <textarea name="work_description" required rows="3" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;">{{ permit.work_description or '' }}</textarea></div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 1: Deliberation</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        {% set hw = permit.atm_measurements | tojson if permit.atm_measurements else '{}' %}
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="risk_analysis" value="1" {% if hw_data.get("risk_analysis") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Risk analysis drawn up</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="working_method" value="1" {% if hw_data.get("working_method") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Working method drawn up</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="safety_procedures" value="1" {% if hw_data.get("safety_procedures") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Safety procedures discussed</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="captain_approval" value="1" {% if hw_data.get("captain_approval") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Captain/Officer approval given</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="crew_aware" value="1" {% if hw_data.get("crew_aware") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">All crew members aware</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="performer_tested" value="1" {% if hw_data.get("performer_tested") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Performer knowledge tested</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 2: Preparation</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="workspace_cleared" value="1" {% if hw_data.get("workspace_cleared") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Workspace cleared & protected</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="designated_location" value="1" {% if hw_data.get("designated_location") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Welding at designated location only</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ppe_selected" value="1" {% if hw_data.get("ppe_selected") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">PPE discussed and selected</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="materials_ok" value="1" {% if hw_data.get("materials_ok") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Materials & PPE in good condition</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_extinguisher" value="1" {% if hw_data.get("fire_extinguisher") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Fire extinguisher(s) on location</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_retardant" value="1" {% if hw_data.get("fire_retardant") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Fire retardant blankets in use</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fireguard_present" value="1" {% if hw_data.get("fireguard_present") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">FireGuard notified</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ventilation_ok" value="1" {% if hw_data.get("ventilation_ok") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Sufficient ventilation present</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_detection_isolated" value="1" {% if hw_data.get("fire_detection_isolated") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Auto fire detection isolated / LOTO</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="first_aid_ready" value="1" {% if hw_data.get("first_aid_ready") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">First-aid equipment provided</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 3: Completion</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="waste_disposed" value="1" {% if hw_data.get("waste_disposed") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Waste disposed after completion</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="surfaces_cooled" value="1" {% if hw_data.get("surfaces_cooled") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">All hot surfaces cooled down</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="area_supervised" value="1" {% if hw_data.get("area_supervised") %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Area supervised 2 hours after</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Signatories</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">FireGuard Name</label><input type="text" name="fireguard_name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project Leader Name</label><input type="text" name="project_leader_name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">HSEQ Officer Name</label><input type="text" name="hseq_name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Person in Charge (Ship)</label><input type="text" name="ship_responsible_name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+      <textarea name="remarks" rows="3" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;">{{ permit.remarks or '' }}</textarea>
+    </div>
+    <div style="padding:20px;background:#f9fafb;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;">
+      <a href="/permits/{{ permit.id }}" style="padding:10px 20px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">← Cancel</a>
+      <button type="submit" style="background:#7f1d1d;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">💾 Save & Resubmit</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

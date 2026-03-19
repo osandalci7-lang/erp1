@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+  <div style="background:#0b1f4d;color:white;padding:16px 20px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;opacity:0.7;">F004.V2.1-8-2024</div>
+      <h2 style="margin:4px 0 0;font-size:18px;">✏️ EDIT — CONFINED SPACE PERMIT #{{ permit.id }}</h2>
+    </div>
+    <div style="text-align:right;font-size:12px;opacity:0.8;">Norden Shipyard SMS</div>
+  </div>
+  <div style="background:#fef9c3;border-left:4px solid #f59e0b;padding:12px 16px;font-size:13px;color:#713f12;font-weight:600;">
+    ⚠️ Editing this permit will reset it to PENDING status and require re-approval.
+  </div>
+  <form method="post" action="/permits/{{ permit.id }}/edit" style="background:white;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#0b1f4d;margin:0 0 16px;font-size:14px;text-transform:uppercase;">General Information</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Vessel *</label>
+        <select name="ship_id" required style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+          <option value="">-- Select vessel --</option>
+          {% for ship in ships %}<option value="{{ ship[0] }}" {% if permit.ship_id == ship[0] %}selected{% endif %}>{{ ship[1] }}</option>{% endfor %}
+        </select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project</label>
+        <select name="project_id" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+          <option value="">-- Select project --</option>
+          {% for project in projects %}<option value="{{ project[0] }}" {% if permit.project_id == project[0] %}selected{% endif %}>{{ project[1] }}</option>{% endfor %}
+        </select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Location *</label>
+        <input type="text" name="location" required value="{{ permit.location or '' }}" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+      </div>
+      <div style="margin-top:14px;"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Work Description *</label>
+      <textarea name="work_description" required rows="3" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;">{{ permit.work_description or '' }}</textarea></div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Checklist</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="safety_instructions" value="1" {% if permit.safety_instructions %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Aware of safety instructions</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="space_investigated" value="1" {% if permit.space_investigated %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Enclosed space investigated</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="adjacent_investigated" value="1" {% if permit.adjacent_investigated %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Adjacent spaces investigated</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ventilation_present" value="1" {% if permit.ventilation_present %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Sufficient ventilation present</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="low_voltage_lighting" value="1" {% if permit.low_voltage_lighting %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Low voltage lighting present</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="low_voltage_equipment" value="1" {% if permit.low_voltage_equipment %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Equipment under low voltage</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="safe_working_conditions" value="1" {% if permit.safe_working_conditions %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Safe working conditions agreed</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ppe_in_use" value="1" {% if permit.ppe_in_use %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">PPE in use</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="other_risks_examined" value="1" {% if permit.other_risks_examined %}checked{% endif %} style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;"><div><div style="font-weight:600;font-size:14px;">Other risks examined</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Atmosphere Measurements</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:#f3f4f6;">
+          <th style="padding:10px;border:1px solid #e5e7eb;">#</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Date</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">O2 (%)</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">LEL (%)</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">PPM</th>
+        </tr></thead>
+        <tbody>
+          {% for i in range(5) %}
+          {% set m = atm[i] if i < atm|length else {} %}
+          <tr>
+            <td style="padding:6px 10px;border:1px solid #e5e7eb;color:#9ca3af;">{{ i+1 }}</td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="date" name="atm_date_{{ i }}" value="{{ m.date if m.date is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="atm_time_{{ i }}" value="{{ m.time if m.time is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_o2_{{ i }}" value="{{ m.o2 if m.o2 is defined else '' }}" step="0.1" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_lel_{{ i }}" value="{{ m.lel if m.lel is defined else '' }}" step="0.1" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_ppm_{{ i }}" value="{{ m.ppm if m.ppm is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Entry List</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:#f3f4f6;">
+          <th style="padding:10px;border:1px solid #e5e7eb;">Date</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Name</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time In</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time Out</th>
+        </tr></thead>
+        <tbody>
+          {% for i in range(6) %}
+          {% set e = entries[i] if i < entries|length else {} %}
+          <tr>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="date" name="entry_date_{{ i }}" value="{{ e.date if e.date is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="text" name="entry_name_{{ i }}" value="{{ e.name if e.name is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="entry_in_{{ i }}" value="{{ e.time_in if e.time_in is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+            <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="entry_out_{{ i }}" value="{{ e.time_out if e.time_out is defined else '' }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+      <textarea name="remarks" rows="3" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;">{{ permit.remarks or '' }}</textarea>
+    </div>
+    <div style="padding:20px;background:#f9fafb;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;">
+      <a href="/permits/{{ permit.id }}" style="padding:10px 20px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">← Cancel</a>
+      <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">💾 Save & Resubmit</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

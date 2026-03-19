@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Norden Safety Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            font-family:Arial, sans-serif;
+            background:#f3f4f6;
+        }
+
+        .layout{
+            display:flex;
+            min-height:calc(100vh - 80px);
+        }
+
+        .sidebar{
+            width:250px;
+            background:#1f2f4a;
+            color:white;
+            padding:30px 16px;
+            flex-shrink:0;
+            transition:transform 0.3s ease;
+        }
+
+        .content{
+            flex:1;
+            padding:24px;
+            min-width:0;
+        }
+
+        .admin-profile{
+            width:170px;
+            background:#f9fafb;
+            padding:24px 16px;
+            border-left:1px solid #e5e7eb;
+            text-align:center;
+            flex-shrink:0;
+        }
+
+        .admin-avatar img{
+            width:72px;
+            height:72px;
+            border-radius:50%;
+            object-fit:cover;
+        }
+
+        .admin-info h3{
+            margin:12px 0 6px 0;
+            font-size:18px;
+        }
+
+        .admin-info p{
+            margin:0;
+            color:#6b7280;
+            font-size:14px;
+        }
+
+        .mobile-menu-btn{
+            display:none;
+            position:fixed;
+            left:16px;
+            bottom:16px;
+            z-index:2000;
+            background:#0b1f4d;
+            color:white;
+            border:none;
+            border-radius:12px;
+            padding:12px 14px;
+            font-size:20px;
+            box-shadow:0 4px 14px rgba(0,0,0,0.25);
+            cursor:pointer;
+        }
+
+        .sidebar-overlay{
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.45);
+            z-index:1400;
+        }
+
+        @media (max-width: 1100px){
+            .admin-profile{
+                display:none;
+            }
+        }
+
+        @media (max-width: 900px){
+            .layout{
+                display:block;
+            }
+
+            .sidebar{
+                position:fixed;
+                top:0;
+                left:0;
+                width:260px;
+                height:100vh;
+                z-index:1500;
+                transform:translateX(-100%);
+                overflow-y:auto;
+            }
+
+            .sidebar.open{
+                transform:translateX(0);
+            }
+
+            .content{
+                width:100%;
+                padding:16px;
+            }
+
+            .mobile-menu-btn{
+                display:block;
+            }
+
+            .sidebar-overlay.show{
+                display:block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% if topbar %}
+{% include topbar %}
+{% else %}
+{% include "topbar.html" %}
+{% endif %}
+
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+<div class="layout">
+
+    {% if sidebar %}
+    <div id="mainSidebar" class="sidebar">
+        {% include sidebar %}
+    </div>
+    {% else %}
+    <div id="mainSidebar" class="sidebar">
+        {% include "sidebar.html" %}
+    </div>
+    {% endif %}
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+<div class="admin-profile">
+    <div class="admin-avatar">
+        <img src="{% if user and user['profile_photo'] %}/static/profile_photos/{{ user['profile_photo'] }}{% else %}/static/images/profile.png{% endif %}" alt="Profile">
+    </div>
+
+    <div class="admin-info">
+        <h3>{{ user["name"] if user and user["name"] else "User" }}</h3>
+        <p>{{ user["position"] if user and user["position"] else user["role"] if user and user["role"] else "" }}</p>
+    </div>
+</div>
+
+</div>
+
+<script>
+function toggleSidebar(){
+    document.getElementById("mainSidebar").classList.toggle("open");
+    document.getElementById("sidebarOverlay").classList.toggle("show");
+}
+
+function closeSidebar(){
+    document.getElementById("mainSidebar").classList.remove("open");
+    document.getElementById("sidebarOverlay").classList.remove("show");
+}
+</script>
+
+</body>
+</html>

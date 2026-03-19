@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Employee Profile</h1>
+
+<div class="employee-tabs">
+
+<a class="tab active" href="/admin/employee/{{employee[0]}}">
+Personal Details
+</a>
+
+{% if has_permission(current_user, "employee_contracts_view") %}
+<a class="tab" href="/admin/employee/{{employee[0]}}/contracts">
+Contracts
+</a>
+{% endif %}
+
+{% if has_permission(current_user, "employee_certificates_view") %}
+<a class="tab" href="/admin/employee/{{employee[0]}}/certificates">
+Certificates
+</a>
+{% endif %}
+
+{% if has_permission(current_user, "employee_health_view") %}
+<a class="tab" href="/admin/employee/{{employee[0]}}/health">
+Health
+</a>
+{% endif %}
+
+{% if has_permission(current_user, "employee_assets_view") %}
+<a class="tab" href="/admin/employee/{{employee[0]}}/assets">
+Staff Assets
+</a>
+{% endif %}
+
+{% if has_permission(current_user, "employee_training_view") %}
+<a class="tab" href="/admin/employee/{{ employee[0] }}/trainings">
+Training
+</a>
+{% endif %}
+
+</div>
+
+<div class="employee-details-grid">
+
+
+<div class="detail-card">
+<label>ID</label>
+<span>{{employee[0]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Username</label>
+<span>{{employee[2]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Name</label>
+<span>{{employee[1]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Position</label>
+<span>{{employee[2]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Department</label>
+<span>{{employee[3]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Email</label>
+<span>{{employee[4]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Phone</label>
+<span>{{employee[5]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Status</label>
+<span>{{employee[6]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Address</label>
+<span>{{employee[7]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Emergency Contact</label>
+<span>{{employee[8]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Contract Start</label>
+<span>{{employee[9]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Contract End</label>
+<span>{{employee[10]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Company Car</label>
+<span>{{employee[11]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Vehicle Plate</label>
+<span>{{employee[12]}}</span>
+</div>
+
+<div class="detail-card">
+<label>Vehicle License</label>
+
+{% if employee[13] %}
+<a href="/static/licenses/{{employee[13]}}" target="_blank">
+View Document
+</a>
+{% else %}
+No document
+{% endif %}
+
+</div>
+
+</div>
+
+
+<div class="employee-edit">
+
+<a href="/admin/employee/edit/{{employee[0]}}" class="edit-btn">
+Edit Employee
+</a>
+
+</div>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

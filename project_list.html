@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="employees-header">
+    <h1>Projects</h1>
+</div>
+
+<div style="margin:20px 0;">
+    <a class="register-btn" href="/project/new">+ Create Project</a>
+</div>
+
+<table class="employee-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Project Code</th>
+            <th>Project Title</th>
+            <th>Ship</th>
+            <th>Customer</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for project in projects %}
+        <tr onclick="window.location='/project/{{ project[0] }}'" class="employee-row">
+            <td>{{ project[0] }}</td>
+            <td>{{ project[1] or '' }}</td>
+            <td>{{ project[2] or '' }}</td>
+            <td>{{ project[3] or '' }}</td>
+            <td>{{ (project[4] or '') ~ ' ' ~ (project[5] or '') }}</td>
+            <td>{{ project[6] or '' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not projects %}
+<p style="margin-top:20px;">No projects created yet.</p>
+{% endif %}
+
+{% endblock %}

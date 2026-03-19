@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Customer Detail</h1>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:30px;">
+
+    <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <form method="post" action="/admin/customer/update/{{ customer[0] }}">
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
+
+                <div>
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ customer[1] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Password</label>
+                    <input type="text" name="password" value="{{ customer[2] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Name</label>
+                    <input type="text" name="name" value="{{ customer[3] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Surname</label>
+                    <input type="text" name="surname" value="{{ customer[4] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Mobile Phone</label>
+                    <input type="text" name="mobile_phone" value="{{ customer[5] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Vehicle Plate</label>
+                    <input type="text" name="vehicle_plate" value="{{ customer[6] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Company Name</label>
+                    <input type="text" name="company_name" value="{{ customer[8] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+                <div>
+                    <label>Purpose of Visit</label>
+                    <input type="text" name="purpose_of_visit" value="{{ customer[9] }}" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+                </div>
+
+            </div>
+
+            <div style="margin-top:24px;">
+                <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                    Update Customer
+                </button>
+
+                <a href="/admin/customer/delete/{{ customer[0] }}"
+                   style="margin-left:12px;background:#b91c1c;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;font-weight:600;">
+                    Delete Customer
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div style="background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">Documents</h3>
+
+        {% if customer[7] %}
+            <p><strong>ID Copy:</strong></p>
+            <a href="/static/customer_documents/{{ customer[7] }}" target="_blank"
+               style="display:inline-block;background:#2563eb;color:white;padding:10px 14px;border-radius:8px;text-decoration:none;">
+                View Document
+            </a>
+        {% else %}
+            <p>No document uploaded.</p>
+        {% endif %}
+
+        <hr style="margin:24px 0;">
+
+        <p><strong>Created At:</strong><br>{{ customer[11] }}</p>
+    </div>
+
+</div>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

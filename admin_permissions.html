@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 style="margin-bottom:24px;">Permission Management</h1>
+
+{% if request.query_params.get('saved') %}
+<div style="background:#d1fae5;color:#065f46;padding:12px 16px;border-radius:10px;margin-bottom:20px;font-weight:600;">
+  Permissions saved successfully!
+</div>
+{% endif %}
+
+<div style="background:white;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+  <h3 style="margin-top:0;margin-bottom:16px;">Select Position</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    {% for pos in positions %}
+    <a href="/admin/settings/permissions?position={{ pos }}"
+       style="padding:8px 16px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;background:{{ '#0b1f4d' if request.query_params.get('position') == pos else '#f3f4f6' }};color:{{ 'white' if request.query_params.get('position') == pos else '#1f2937' }};">
+      {{ pos }}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% set selected_pos = request.query_params.get('position') %}
+{% if selected_pos %}
+<div style="background:white;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+  <h3 style="margin-top:0;margin-bottom:20px;">{{ selected_pos }} - Permissions</h3>
+  <form method="post" action="/admin/settings/permissions">
+    <input type="hidden" name="position" value="{{ selected_pos }}">
+
+    {% for group, perms in [
+      ("Employee", ["employee_self_view","employee_list_view","employee_detail_view","employee_create","employee_edit","employee_delete","employee_assets_view","employee_training_view","employee_certificates_view","employee_health_view","employee_contracts_view","employee_documents_full"]),
+      ("Project", ["project_view","project_create","project_edit","project_delete","project_document_upload","project_note_add"]),
+      ("Permits", ["permit_delete"]),
+      ("Visitor", ["visitor_view","visitor_create","visitor_edit","visitor_delete"]),
+      ("Customer", ["customer_view","customer_create","customer_edit","customer_delete"]),
+      ("Ship", ["ship_view","ship_create","ship_edit","ship_delete"]),
+      ("Training", ["training_view_own","training_library_view","training_library_manage","training_assignment_view","training_assignment_manage"]),
+      ("Admin", ["admin_full_access"])
+    ] %}
+    <div style="margin-bottom:20px;">
+      <div style="font-weight:700;font-size:14px;color:#0b1f4d;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb;">{{ group }}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;">
+        {% for perm in perms %}
+        <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;">
+          <input type="checkbox" name="permissions" value="{{ perm }}" {% if selected_pos in perm_map and perm in perm_map[selected_pos] %}checked{% endif %} style="width:16px;height:16px;cursor:pointer;">
+          {{ perm | replace("_", " ") }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 24px;border-radius:10px;font-weight:600;font-size:15px;cursor:pointer;">
+      Save Permissions
+    </button>
+  </form>
+</div>
+{% endif %}
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

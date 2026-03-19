@@ -1,0 +1,30 @@
+<div style="background:#0b1f4d;color:white;padding:0 16px;height:60px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button id="topbarHamburger" onclick="toggleSidebar()" style="background:rgba(255,255,255,0.15);color:white;border:none;border-radius:8px;width:40px;height:40px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">☰</button>
+    <a href="{{ dashboard_url }}">
+      <img src="/static/images/logo.png" alt="Norden" style="height:36px;width:auto;display:block;">
+    </a>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="{{ dashboard_url }}" style="color:white;text-decoration:none;font-weight:600;font-size:14px;">Dashboard</a>
+    <a href="/admin/settings" style="color:white;text-decoration:none;font-weight:600;font-size:14px;">Settings</a>
+    <a href="/logout" style="color:#fca5a5;text-decoration:none;font-weight:600;font-size:14px;">Logout</a>
+  </div>
+</div>
+
+<style>
+@media(min-width:901px){ #topbarHamburger { display:none !important; } }
+</style>
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>

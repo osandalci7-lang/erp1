@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Norden Safety Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#f3f4f6;font-size:16px;}
+.layout{display:flex;min-height:calc(100vh - 60px);}
+.sidebar{width:240px;background:#1f2f4a;color:white;padding:24px 16px;flex-shrink:0;overflow-y:auto;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;}
+.sidebar a:hover{background:rgba(255,255,255,0.12);}
+.sidebar h2{font-size:18px;margin-bottom:16px;color:#93c5fd;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.content{flex:1;padding:24px;min-width:0;overflow-x:hidden;}
+.admin-profile{width:160px;background:#f9fafb;padding:20px 12px;border-left:1px solid #e5e7eb;text-align:center;flex-shrink:0;}
+.admin-avatar img{width:64px;height:64px;border-radius:50%;object-fit:cover;}
+.admin-info h3{margin:10px 0 4px;font-size:15px;}
+.admin-info p{color:#6b7280;font-size:13px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1400;}
+.sidebar-overlay.show{display:block;}
+@media(min-width:901px){.sidebar .sidebar-profile{display:none;}}
+.admin-profile{display:none;}
+@media(max-width:900px){
+  
+  .layout{display:block;}
+  .sidebar{position:fixed;top:60px;left:0;width:280px;height:calc(100vh - 60px);z-index:1500;transform:translateX(-100%);overflow-y:auto;transition:transform 0.3s ease;}
+  .sidebar.open{transform:translateX(0) !important;box-shadow:6px 0 24px rgba(0,0,0,0.4);}
+  .content{width:100%;padding:12px;}
+  h1{font-size:20px;}h2{font-size:18px;}
+}
+
+
+button#fabBtn { display:none !important; }
+@media screen and (max-width:900px){ button#fabBtn { display:flex !important; } }
+</style>
+</head>
+<body>
+
+{% if topbar %}{% include topbar %}{% else %}{% include "topbar.html" %}{% endif %}
+
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+
+<div class="layout">
+  <div id="mainSidebar" class="sidebar">
+    {% if sidebar %}{% include sidebar %}{% else %}{% include "sidebar.html" %}{% endif %}
+  </div>
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+  <div class="admin-profile">
+    <div class="admin-avatar">
+      {% if user and user['profile_photo'] %}
+        <img src="/static/profile_photos/{{ user['profile_photo'] }}" alt="Profile" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">
+      {% else %}
+        <div style="width:64px;height:64px;border-radius:50%;background:#1f2f4a;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto;">👤</div>
+      {% endif %}
+    </div>
+    <div class="admin-info">
+      <h3>{{ user['name'] if user else 'Admin' }}</h3>
+      <p>{{ user['position'] if user else '' }}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById("mainSidebar").classList.toggle("open");
+  document.getElementById("sidebarOverlay").classList.toggle("show");
+}
+function closeSidebar(){
+  document.getElementById("mainSidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("show");
+}
+</script>
+</body>
+</html>

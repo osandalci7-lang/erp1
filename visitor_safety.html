@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Norden Shipyard - Safety Orientation</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#1a1a2e;color:#333;overflow:hidden;}
+.lang-select{position:fixed;top:0;left:0;right:0;bottom:0;background:#0b1f4d;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;}
+.lang-select img{width:120px;margin-bottom:30px;}
+.lang-select h1{color:white;font-size:28px;margin-bottom:40px;text-align:center;}
+.lang-btn{background:white;color:#0b1f4d;border:none;padding:16px 48px;border-radius:12px;font-size:20px;font-weight:700;cursor:pointer;margin:10px;min-width:200px;}
+.lang-btn:hover{background:#e2e8f0;}
+.slideshow{display:none;position:fixed;top:0;left:0;right:0;bottom:0;flex-direction:column;}
+.slideshow.active{display:flex;}
+.slide-header{background:#0b1f4d;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.slide-header img{height:40px;}
+.slide-counter{color:#93c5fd;font-size:13px;font-weight:600;}
+.slide-content{flex:1;overflow-y:auto;background:white;}
+.slide{display:none;padding:24px 20px;min-height:100%;}
+.slide.active{display:block;}
+.slide-title{font-size:20px;font-weight:700;color:#0b1f4d;text-align:center;border-bottom:3px solid #0b1f4d;padding-bottom:12px;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;}
+.slide-body{font-size:15px;line-height:1.7;color:#374151;}
+.slide-body ul{padding-left:20px;margin-top:10px;}
+.slide-body ul li{margin-bottom:8px;}
+.slide-body p{margin-bottom:12px;}
+.highlight{background:#fef9c3;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-weight:600;}
+.danger{background:#fee2e2;border-left:4px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-weight:600;color:#991b1b;}
+.info-box{background:#dbeafe;border-left:4px solid #3b82f6;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0;}
+.card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;}
+.card h4{color:#0b1f4d;margin-bottom:8px;font-size:14px;}
+.yard-photo{width:100%;border-radius:10px;margin:16px 0;max-height:200px;object-fit:cover;}
+.safety-plan{width:100%;border-radius:10px;margin:16px 0;}
+.contact-box{background:#0b1f4d;color:white;border-radius:12px;padding:16px;margin:16px 0;text-align:center;}
+.contact-box h3{font-size:18px;margin-bottom:12px;color:#93c5fd;}
+.contact-item{margin:8px 0;font-size:15px;}
+.contact-item strong{color:#fbbf24;}
+.footer-nav{background:#0b1f4d;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:10px;}
+.nav-btn{background:#1e3a6e;color:white;border:none;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;flex:1;max-width:140px;}
+.nav-btn:hover{background:#2d4f8a;}
+.nav-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.progress-bar{flex:1;background:#1e3a6e;border-radius:4px;height:8px;overflow:hidden;}
+.progress-fill{height:100%;background:#3b82f6;transition:width 0.3s;}
+.complete-btn{background:#10b981;color:white;border:none;padding:14px 28px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;width:100%;margin-top:10px;display:none;}
+.complete-btn.show{display:block;}
+@media(max-width:600px){
+  .two-col{grid-template-columns:1fr;}
+  .slide-title{font-size:17px;}
+  .slide-body{font-size:14px;}
+  .nav-btn{padding:10px 14px;font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE SELECTION -->
+<div class="lang-select" id="langSelect">
+  <div style="width:100px;height:100px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+    <span style="font-size:40px;">⚓</span>
+  </div>
+  <h1>Norden Shipyard<br><span style="font-size:18px;opacity:0.8;">Safety Orientation</span></h1>
+  <p style="color:#93c5fd;margin-bottom:30px;text-align:center;">Select your language / Kies uw taal</p>
+  <button class="lang-btn" onclick="startSlides('en')">🇬🇧 English</button>
+  <button class="lang-btn" onclick="startSlides('nl')">🇳🇱 Nederlands</button>
+</div>
+
+<!-- SLIDESHOW -->
+<div class="slideshow" id="slideshow">
+  <div class="slide-header">
+    <div style="color:white;font-weight:700;font-size:16px;">⚓ Norden Shipyard</div>
+    <div class="slide-counter" id="slideCounter">1 / 12</div>
+  </div>
+
+  <div class="slide-content" id="slideContent">
+
+    <!-- SLIDE 1: WELCOME -->
+    <div class="slide active" id="slide-1">
+      <div class="slide-title" id="title-1">Welcome to Norden Shipyard</div>
+      <div class="slide-body">
+        <img src="/static/images/yard_photo.jpg" class="yard-photo" onerror="this.style.display='none'">
+        <div class="info-box">
+          <strong>Norden Shipyard</strong><br>
+          Wervenweg 1 — 4551MC Sas van Gent<br>
+          The Netherlands
+        </div>
+        <p id="body-1-en">Following this safety orientation is <strong>mandatory</strong> to be allowed access to the yard premises.<br><br>
+        This orientation has a validity of <strong>12 months</strong> upon completion.<br><br>
+        Please read each slide carefully and complete all sections.</p>
+        <p id="body-1-nl" style="display:none">Het volgen van deze veiligheidsoriëntatie is <strong>verplicht</strong> om toegang te krijgen tot het terrein.<br><br>
+        Deze oriëntatie heeft een geldigheid van <strong>12 maanden</strong> na voltooiing.<br><br>
+        Lees elke dia zorgvuldig door en voltooi alle secties.</p>
+        <div class="contact-box">
+          <h3>📞 Contact Information</h3>
+          <div class="contact-item"><strong>Emergency:</strong> 112</div>
+          <div class="contact-item"><strong>Ogun Sandalci:</strong> +31 6 15 30 82 07</div>
+          <div class="contact-item"><strong>Office:</strong> +31 (0) 115 47 16 59</div>
+          <div class="contact-item"><strong>Rob Wollrabe:</strong> +31 (0) 6 21 63 29 41</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: ISPS -->
+    <div class="slide" id="slide-2">
+      <div class="slide-title" id="title-2">ISPS Facility</div>
+      <div class="slide-body">
+        <div class="highlight" id="isps-en">Norden Shipyard is an ISPS Facility and operates according to the rules of the ISPS-Code.</div>
+        <div class="highlight" id="isps-nl" style="display:none">Norden Shipyard is een ISPS-faciliteit en werkt volgens de regels van de ISPS-code.</div>
+        <ul id="isps-list-en">
+          <li>Each employee, contractor, sub-contractor and/or visitor must identify themselves upon arrival.</li>
+          <li>Security Officers may search your vehicle, luggage or personal possessions if circumstances require.</li>
+          <li>All suspicious situations must be reported to the security office.</li>
+          <li>Everyone must complete registration and training prior to entering the premises.</li>
+          <li>Last minute port instructions are available at the security office.</li>
+        </ul>
+        <ul id="isps-list-nl" style="display:none">
+          <li>Elke medewerker, aannemer, onderaannemer en/of bezoeker dient zich bij aankomst te identificeren.</li>
+          <li>Beveiligingsbeambten mogen uw voertuig, bagage of persoonlijke bezittingen doorzoeken indien omstandigheden dit vereisen.</li>
+          <li>Alle verdachte situaties moeten worden gemeld bij de beveiligingspost.</li>
+          <li>Iedereen moet registratie en training voltooien alvorens het terrein te betreden.</li>
+          <li>Last-minute havenvoorschriften zijn beschikbaar bij de beveiligingspost.</li>
+        </ul>
+        <div class="danger" id="isps-warn-en">⚠️ ISPS level may change without notice depending on threat level.</div>
+        <div class="danger" id="isps-warn-nl" style="display:none">⚠️ Het ISPS-niveau kan zonder kennisgeving wijzigen afhankelijk van het dreigingsniveau.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: GENERAL PREMISES RULES -->
+    <div class="slide" id="slide-3">
+      <div class="slide-title" id="title-3">General Premises Rules</div>
+      <div class="slide-body">
+        <ul id="premises-en">
+          <li>Reverse parking is mandatory on the main parking area.</li>
+          <li>Report to the gate prior to entering the yard premises and/or use your personal access badge.</li>
+          <li>The usage of PPE is mandatory except on yellow marked footpaths.</li>
+          <li>Wear appropriate and fitted working clothes suitable for the job.</li>
+          <li>Work with the correct and certified tools intended for the job.</li>
+          <li>Keep safety equipment and escape routes free from obstructions and accessible.</li>
+          <li>Respect safety markings and barriers on the premises.</li>
+          <li>Report all incidents/accidents and unsafe situations directly to the Management/Safety Officers.</li>
+          <li>Everyone is responsible for working in a safe and environmentally responsible way.</li>
+          <li>Adhere to additional rules outlined by management on the various notice boards.</li>
+        </ul>
+        <ul id="premises-nl" style="display:none">
+          <li>Achteruit parkeren is verplicht op de hoofdparkeerplaats.</li>
+          <li>Meld u bij de poort voordat u het terrein betreedt en/of gebruik uw persoonlijk toegangsbadge.</li>
+          <li>Het dragen van PBM's is verplicht, behalve op de geel gemarkeerde voetpaden.</li>
+          <li>Draag geschikte en passende werkkleding.</li>
+          <li>Werk met de juiste en gecertificeerde gereedschappen.</li>
+          <li>Houd veiligheidsuitrusting en vluchtwegen vrij van obstakels.</li>
+          <li>Respecteer veiligheidsmarkeringen en barrières op het terrein.</li>
+          <li>Meld alle incidenten en onveilige situaties direct aan de leiding/veiligheidsofficieren.</li>
+          <li>Iedereen is verantwoordelijk voor veilig en milieubewust werken.</li>
+        </ul>
+        <div class="danger" id="photo-en">🚫 It is prohibited to take photos/videos and fly drones on the premises without management consent. Publishing on social media is strictly forbidden. The premises is under 24hr video surveillance.</div>
+        <div class="danger" id="photo-nl" style="display:none">🚫 Het is verboden foto's/video's te maken en drones te vliegen op het terrein zonder toestemming van het management. Het terrein staat 24 uur onder camerabewaking.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: PPE -->
+    <div class="slide" id="slide-4">
+      <div class="slide-title" id="title-4">Personal Protective Equipment (PPE)</div>
+      <div class="slide-body">
+        <div class="highlight" id="ppe-min-en">⛑️ Minimum required PPE: Safety shoes, hard hat, coverall.</div>
+        <div class="highlight" id="ppe-min-nl" style="display:none">⛑️ Minimaal vereiste PBM's: Veiligheidsschoenen, helm, overall.</div>
+        <p id="ppe-intro-en">PPE is mandatory everywhere on the premises, with exemption of PPE-free zones (yellow footpath).</p>
+        <p id="ppe-intro-nl" style="display:none">PBM's zijn overal op het terrein verplicht, met uitzondering van PBM-vrije zones (geel voetpad).</p>
+        <p style="font-weight:600;margin-top:12px;" id="ppe-task-en">Task specific PPE:</p>
+        <p style="font-weight:600;margin-top:12px;" id="ppe-task-nl" style="display:none">Taakspecifieke PBM's:</p>
+        <ul id="ppe-list-en">
+          <li>Fall protection when working at height or in cherry picker.</li>
+          <li>Life jacket when working on pontoons, exposed edges or above water.</li>
+          <li>Welding helmet/shields or welding goggles during welding works.</li>
+          <li>Hearing protection during various work (above 85 dB(A)).</li>
+          <li>Respiratory protection during various works.</li>
+        </ul>
+        <ul id="ppe-list-nl" style="display:none">
+          <li>Valbeveiliging bij werken op hoogte of in een hoogwerker.</li>
+          <li>Reddingsvest bij werken op pontons, open randen of boven water.</li>
+          <li>Lashelm/schild of lasbril tijdens laswerk.</li>
+          <li>Gehoorbescherming tijdens diverse werkzaamheden (boven 85 dB(A)).</li>
+          <li>Ademhalingsbescherming tijdens diverse werkzaamheden.</li>
+        </ul>
+        <div class="info-box" id="ppe-sub-en">Subcontractors should bring their own certified and well-maintained PPE.</div>
+        <div class="info-box" id="ppe-sub-nl" style="display:none">Onderaannemers dienen hun eigen gecertificeerde en goed onderhouden PBM's mee te brengen.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: PARKING -->
+    <div class="slide" id="slide-5">
+      <div class="slide-title" id="title-5">Parking</div>
+      <div class="slide-body">
+        <div class="danger" id="park-warn-en">⚠️ Parking on the main parking and the yard premises of Norden Shipyard is at own risk. We are not responsible for any damage caused by other vehicles, trucks or spray paint.</div>
+        <div class="danger" id="park-warn-nl" style="display:none">⚠️ Parkeren op de hoofdparkeerplaats en het terrein is op eigen risico. Wij zijn niet aansprakelijk voor schade veroorzaakt door andere voertuigen, trucks of verfspuiten.</div>
+        <ul id="park-en">
+          <li>Reverse parking is mandatory on the main parking.</li>
+          <li>Access to the premises by car/work van is only allowed after written permission of Management.</li>
+          <li>Maximum speed of <strong>15 km/h</strong> on the premises.</li>
+          <li>Use of hazard lights while driving on the premises.</li>
+          <li>Internal pedestrians and vehicles such as forklifts have right of way at all times.</li>
+          <li>Park only in designated parking spots.</li>
+        </ul>
+        <ul id="park-nl" style="display:none">
+          <li>Achteruit parkeren is verplicht op de hoofdparkeerplaats.</li>
+          <li>Toegang tot het terrein met auto/bedrijfswagen is alleen toegestaan na schriftelijke toestemming van het management.</li>
+          <li>Maximumsnelheid van <strong>15 km/u</strong> op het terrein.</li>
+          <li>Gebruik alarmlichten tijdens het rijden op het terrein.</li>
+          <li>Interne voetgangers en voertuigen zoals heftrucks hebben te allen tijde voorrang.</li>
+          <li>Parkeer alleen op aangewezen parkeerplaatsen.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: ALCOHOL & DRUGS -->
+    <div class="slide" id="slide-6">
+      <div class="slide-title" id="title-6">Alcohol and Drugs</div>
+      <div class="slide-body">
+        <div class="danger" id="alc-en">🚫 Being under the influence, usage and/or being in possession of alcohol and drugs on the premises is strictly prohibited.<br><br>
+        Failure to comply will lead to direct dismissal and ban from the yard premises.</div>
+        <div class="danger" id="alc-nl" style="display:none">🚫 Het zijn onder invloed, gebruik en/of bezit van alcohol en drugs op het terrein is strikt verboden.<br><br>
+        Overtreding leidt tot directe verwijdering en verbanning van het terrein.</div>
+        <div class="info-box" id="alc-exc-en">With the exemption of recreational alcohol consumption on-board non-dry vessels outside normal working hours.</div>
+        <div class="info-box" id="alc-exc-nl" style="display:none">Met uitzondering van recreatief alcoholgebruik aan boord van niet-droge vaartuigen buiten normale werktijden.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: FORKLIFTS -->
+    <div class="slide" id="slide-7">
+      <div class="slide-title" id="title-7">Forklifts and Internal Transport</div>
+      <div class="slide-body">
+        <p id="fork-intro-en">Internal transport on the yard is mainly carried out with forklifts.</p>
+        <p id="fork-intro-nl" style="display:none">Intern transport op de werf wordt voornamelijk uitgevoerd met heftrucks.</p>
+        <ul id="fork-en" style="margin-top:12px;">
+          <li>Forklift assistance can be called in via the project manager.</li>
+          <li>At all times be aware of forklifts passing by — make eye contact with the operator to ensure they are aware of your presence.</li>
+          <li><strong>Forklifts have priority over pedestrians and vehicles at all times!</strong></li>
+        </ul>
+        <ul id="fork-nl" style="display:none;margin-top:12px;">
+          <li>Heftruck hulp kan worden aangevraagd via de projectmanager.</li>
+          <li>Wees te allen tijde alert op passerende heftrucks — maak oogcontact met de bestuurder.</li>
+          <li><strong>Heftrucks hebben te allen tijde voorrang op voetgangers en voertuigen!</strong></li>
+        </ul>
+        <div class="danger" id="fork-warn-en" style="margin-top:16px;">⚠️ Never walk under suspended loads. Always follow operator instructions.</div>
+        <div class="danger" id="fork-warn-nl" style="display:none;margin-top:16px;">⚠️ Loop nooit onder hangende lasten. Volg altijd de instructies van de bestuurder.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: LIFTING OPERATIONS -->
+    <div class="slide" id="slide-8">
+      <div class="slide-title" id="title-8">Lifting Operations</div>
+      <div class="slide-body">
+        <p id="lift-intro-en">Lifting operations are very common on Norden Shipyard.</p>
+        <p id="lift-intro-nl" style="display:none">Hijsoperaties komen veel voor op Norden Shipyard.</p>
+        <ul id="lift-en" style="margin-top:12px;">
+          <li>All lifting operations with fixed tower cranes and mobile cranes are executed by certified crane operators.</li>
+          <li>Only certified lifting equipment to be used — a damaged soft sling is not an appropriate lifting device.</li>
+          <li>Lifting loads above 10 tons or odd-size shapes are subject to an approved lifting plan.</li>
+          <li>All loads to be guided by means of taglines except in case of tandem lifting.</li>
+          <li>Never walk under loads and always follow instructions.</li>
+          <li>Barriered-off lifting areas must be respected at all times.</li>
+        </ul>
+        <ul id="lift-nl" style="display:none;margin-top:12px;">
+          <li>Alle hijsoperaties worden uitgevoerd door gecertificeerde kraanmachinisten.</li>
+          <li>Gebruik alleen gecertificeerd hijsmaterieel — een beschadigde zachte oogband is geen geschikte hijsinrichting.</li>
+          <li>Hijsen van lasten boven 10 ton of onregelmatige vormen vereist een goedgekeurd hijsplan.</li>
+          <li>Alle lasten worden begeleid met stuurlijnen, behalve bij tandemhijsen.</li>
+          <li>Loop nooit onder hangende lasten en volg altijd instructies.</li>
+          <li>Afgebakende hijsgebieden moeten te allen tijde worden gerespecteerd.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: PERMIT TO WORK -->
+    <div class="slide" id="slide-9">
+      <div class="slide-title" id="title-9">Permit to Work</div>
+      <div class="slide-body">
+        <div class="highlight" id="ptw-en">📋 Each and every activity is subject to a Permit to Work.</div>
+        <div class="highlight" id="ptw-nl" style="display:none">📋 Elke activiteit is onderworpen aan een werkvergunning.</div>
+        <p id="ptw-body-en">Permits to Work are granted and controlled by the yard safety officers. Any deviations will be controlled by the yard's Safety Officers.</p>
+        <p id="ptw-body-nl" style="display:none">Werkvergunningen worden verleend en gecontroleerd door de veiligheidsofficieren van de werf.</p>
+        <div class="two-col" style="margin-top:16px;">
+          <div class="card">
+            <h4 id="ptw-valid-en">⏱️ Permit Validity</h4>
+            <h4 id="ptw-valid-nl" style="display:none">⏱️ Geldigheid vergunning</h4>
+            <p id="ptw-valid-body-en">Maximum 12 hours</p>
+            <p id="ptw-valid-body-nl" style="display:none">Maximaal 12 uur</p>
+          </div>
+          <div class="card">
+            <h4 id="ptw-types-en">📝 Types</h4>
+            <h4 id="ptw-types-nl" style="display:none">📝 Types</h4>
+            <p>Confined Space<br>Hot Work<br>HD Cleaning</p>
+          </div>
+        </div>
+        <div class="info-box" id="ptw-complete-en">Upon completion of the works, the safety officer must be informed that works have been finished.</div>
+        <div class="info-box" id="ptw-complete-nl" style="display:none">Na voltooiing van de werkzaamheden moet de veiligheidsofficier worden geïnformeerd dat het werk is afgerond.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: HOUSEKEEPING & WASTE -->
+    <div class="slide" id="slide-10">
+      <div class="slide-title" id="title-10">Housekeeping & Waste Segregation</div>
+      <div class="slide-body">
+        <ul id="house-en">
+          <li>Keep your workplace clean and tidy after finishing.</li>
+          <li>Use cable safety hooks (S-hooks) to improve cable management and prevent tripping hazards.</li>
+          <li>When a small oil spill occurs, clean it immediately — absorption materials are available in yellow containers on the premises.</li>
+          <li>When a big oil spill occurs or oil is spilled in water — directly inform your project manager or safety officer.</li>
+          <li>Tools/equipment not in use to be stored in appropriate places.</li>
+        </ul>
+        <ul id="house-nl" style="display:none">
+          <li>Houd uw werkplek schoon en opgeruimd na het beëindigen van werkzaamheden.</li>
+          <li>Gebruik kabelbeugels (S-haken) voor kabelbeheer en het voorkomen van struikelgevaar.</li>
+          <li>Bij kleine olielekkage direct reinigen — absorptiematerialen zijn beschikbaar in gele containers.</li>
+          <li>Bij grote olielekkage of lekkage in water — direct informeer uw projectmanager of veiligheidsofficier.</li>
+          <li>Gereedschap/apparatuur niet in gebruik opbergen op de juiste plaatsen.</li>
+        </ul>
+        <div class="highlight" id="waste-en" style="margin-top:16px;">♻️ Please segregate the various types of waste in the appropriate containers. Oil and chemical substances to be reported to the project manager. Don't litter plastic bottles, coffee cups and cigarette butts on the premises.</div>
+        <div class="highlight" id="waste-nl" style="display:none;margin-top:16px;">♻️ Segregeer de verschillende soorten afval in de juiste containers. Olie en chemische stoffen melden aan de projectmanager. Gooi geen plastic flessen, koffiebekers en sigarettenpeuken op het terrein.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: STOP THE JOB & EMERGENCY -->
+    <div class="slide" id="slide-11">
+      <div class="slide-title" id="title-11">Stop the Job & Emergency Response</div>
+      <div class="slide-body">
+        <div class="highlight" id="stop-en">✋ You have the RIGHT to stop the work immediately if you believe working conditions are unsafe. Directly inform the Safety Officers or the Project Manager.</div>
+        <div class="highlight" id="stop-nl" style="display:none">✋ U heeft het RECHT om het werk onmiddellijk te stoppen als u van mening bent dat de werkomstandigheden onveilig zijn. Informeer direct de veiligheidsofficieren of de projectmanager.</div>
+        <div class="danger" id="emg-en" style="margin-top:16px;">🚨 In case of emergency of any kind, directly report to the yard project managers or safety officers.<br><br>
+        Project managers wear orange coveralls with a yellow hard hat. Safety officers wear orange coveralls with the text "Safety Officer" and orange hard hat.</div>
+        <div class="danger" id="emg-nl" style="display:none;margin-top:16px;">🚨 Bij elke noodsituatie direct melden bij de projectmanagers of veiligheidsofficieren van de werf.<br><br>
+        Projectmanagers dragen oranje overalls met een gele helm. Veiligheidsofficieren dragen oranje overalls met de tekst "Safety Officer" en oranje helm.</div>
+        <div class="contact-box" style="margin-top:16px;">
+          <h3>🆘 Emergency Contacts</h3>
+          <div class="contact-item"><strong>EMERGENCY:</strong> 112</div>
+          <div class="contact-item"><strong>During working hours:</strong> +31 (0) 115 47 16 59</div>
+          <div class="contact-item"><strong>Ogun Sandalci:</strong> +31 6 15 30 82 07</div>
+          <div class="contact-item"><strong>Rob Wollrabe:</strong> +31 (0) 6 21 63 29 41</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: SAFETY PLAN + COMPLETE -->
+    <div class="slide" id="slide-12">
+      <div class="slide-title" id="title-12">Safety Plan & Completion</div>
+      <div class="slide-body">
+        <p id="plan-intro-en" style="margin-bottom:12px;">Please review the Norden Shipyard safety plan below:</p>
+        <p id="plan-intro-nl" style="display:none;margin-bottom:12px;">Bekijk het onderstaande veiligheidsplan van Norden Shipyard:</p>
+        <img src="/static/images/safety_plan.jpg" class="safety-plan" onerror="this.style.display='none'">
+        <div class="highlight" id="complete-msg-en">✅ You have completed the Norden Shipyard Safety Orientation. By clicking complete below, you confirm that you have read and understood all safety rules and will comply with them during your visit.</div>
+        <div class="highlight" id="complete-msg-nl" style="display:none">✅ U heeft de veiligheidsoriëntatie van Norden Shipyard voltooid. Door hieronder op voltooien te klikken, bevestigt u dat u alle veiligheidsregels heeft gelezen, begrepen en zal naleven tijdens uw bezoek.</div>
+        <form method="post" action="/visitor/safety-complete" style="margin-top:16px;">
+          <button type="submit" class="complete-btn show" id="completeBtn">✅ Complete Safety Orientation</button>
+        </form>
+      </div>
+    </div>
+
+  </div><!-- end slide-content -->
+
+  <div class="footer-nav">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Prev</button>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:8%"></div></div>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+  </div>
+</div>
+
+<script>
+let currentSlide = 1;
+const totalSlides = 12;
+let lang = 'en';
+
+const titles = {
+  en: ['Welcome to Norden Shipyard','ISPS Facility','General Premises Rules','Personal Protective Equipment (PPE)','Parking','Alcohol and Drugs','Forklifts and Internal Transport','Lifting Operations','Permit to Work','Housekeeping & Waste Segregation','Stop the Job & Emergency Response','Safety Plan & Completion'],
+  nl: ['Welkom bij Norden Shipyard','ISPS Faciliteit','Algemene Terreinregels','Persoonlijke Beschermingsmiddelen (PBM)','Parkeren','Alcohol en Drugs','Heftrucks en Intern Transport','Hijsoperaties','Werkvergunning','Huishouding & Afvalscheiding','Stop het Werk & Noodrespons','Veiligheidsplan & Voltooiing']
+};
+
+function startSlides(selectedLang) {
+  lang = selectedLang;
+  document.getElementById('langSelect').style.display = 'none';
+  document.getElementById('slideshow').classList.add('active');
+  applyLang();
+  updateNav();
+}
+
+function applyLang() {
+  // Show/hide language-specific elements
+  const enEls = document.querySelectorAll('[id$="-en"]:not([id^="slide-"]):not([id^="title-"])');
+  const nlEls = document.querySelectorAll('[id$="-nl"]:not([id^="slide-"]):not([id^="title-"])');
+  enEls.forEach(el => el.style.display = (lang === 'en') ? '' : 'none');
+  nlEls.forEach(el => el.style.display = (lang === 'nl') ? '' : 'none');
+  
+  // Update titles
+  titles[lang].forEach((title, i) => {
+    const el = document.getElementById(`title-${i+1}`);
+    if (el) el.textContent = title;
+  });
+
+  // Update nav buttons
+  document.getElementById('prevBtn').textContent = lang === 'nl' ? '← Vorige' : '← Prev';
+  document.getElementById('nextBtn').textContent = lang === 'nl' ? 'Volgende →' : 'Next →';
+  document.getElementById('completeBtn').textContent = lang === 'nl' ? '✅ Veiligheidsoriëntatie voltooien' : '✅ Complete Safety Orientation';
+}
+
+function changeSlide(dir) {
+  document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+  currentSlide += dir;
+  document.getElementById(`slide-${currentSlide}`).classList.add('active');
+  document.getElementById('slideContent').scrollTop = 0;
+  updateNav();
+}
+
+function updateNav() {
+  document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+  document.getElementById('prevBtn').disabled = currentSlide === 1;
+  document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+  document.getElementById('progressFill').style.width = `${(currentSlide / totalSlides) * 100}%`;
+}
+</script>
+</body>
+</html>

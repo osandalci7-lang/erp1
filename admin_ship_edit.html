@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{% if ship %}Edit Ship{% else %}Add Ship{% endif %}</h1>
+
+<form method="post"
+      action="{% if ship %}/admin/ship/update/{{ ship[0] }}{% else %}/admin/ship/create{% endif %}"
+      class="employee-edit-form">
+
+    <div class="employee-form-grid">
+
+        <div class="form-group">
+            <label>Ship Name</label>
+            <input type="text" name="ship_name" value="{{ ship[1] if ship else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Tonnage</label>
+            <input type="text" name="tonnage" value="{{ ship[2] if ship else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Flag</label>
+            <input type="text" name="flag" value="{{ ship[3] if ship else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Berth / Location</label>
+            <input type="text" name="berth_location" value="{{ ship[4] if ship else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Company Name</label>
+            <input type="text" name="company_name" value="{{ ship[5] if ship else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Arrival Time</label>
+            <input type="text" name="arrival_time" value="{{ ship[6] if ship else '' }}" placeholder="2026-03-16 08:00">
+        </div>
+
+        <div class="form-group">
+            <label>Estimated Departure Time</label>
+            <input type="text" name="departure_time" value="{{ ship[7] if ship else '' }}" placeholder="2026-03-18 18:00">
+        </div>
+
+    </div>
+
+    <div style="margin-top:20px;">
+        <button type="submit" class="register-btn">{% if ship %}Update Ship{% else %}Save Ship{% endif %}</button>
+        <a href="/admin/ships" class="download-btn" style="text-decoration:none;">Back</a>
+
+        {% if ship %}
+        <a href="/admin/ship/delete/{{ ship[0] }}" class="delete-btn" style="text-decoration:none; margin-left:10px;">
+            Delete Ship
+        </a>
+        {% endif %}
+    </div>
+
+</form>
+
+<style>
+.employee-edit-form{
+    max-width:1200px;
+}
+
+.employee-form-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+    margin-top:20px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.form-group input{
+    width:100%;
+    padding:12px;
+    border:1px solid #d7dce3;
+    border-radius:10px;
+    background:#fff;
+    box-sizing:border-box;
+}
+</style>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

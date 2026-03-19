@@ -1,0 +1,102 @@
+{% extends "visitor_portal_base.html" %}
+
+{% block content %}
+
+<div style="max-width:1200px;margin:0 auto;">
+    <h1 style="margin:0 0 24px 0;color:#0b1f4d;">{{ project[1] }} - {{ project[2] }}</h1>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;">
+            <div><strong>Ship:</strong> {{ project[5] or '-' }}</div>
+            <div><strong>Status:</strong> {{ project[3] or '-' }}</div>
+            <div><strong>Tonnage:</strong> {{ project[6] or '-' }}</div>
+            <div><strong>Flag:</strong> {{ project[7] or '-' }}</div>
+            <div><strong>Berth:</strong> {{ project[8] or '-' }}</div>
+            <div><strong>Company:</strong> {{ project[9] or '-' }}</div>
+            <div><strong>Created At:</strong> {{ project[4] or '-' }}</div>
+        </div>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+        <h3 style="margin-top:0;">Daily Notes / Requests</h3>
+
+        {% if notes %}
+            {% for note in notes %}
+            <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+                <div style="font-weight:700;color:#0b1f4d;">{{ note[2] }} - {{ note[1] }}</div>
+                <div style="margin-top:8px;white-space:pre-wrap;">{{ note[3] }}</div>
+                <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ note[4] }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No notes yet.</p>
+        {% endif %}
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+        <h3 style="margin-top:0;">Project Documents</h3>
+
+        {% if documents %}
+            {% for doc in documents %}
+            <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+                <div style="font-weight:700;color:#0b1f4d;">{{ doc[1] }} - {{ doc[2] }}</div>
+                <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ doc[4] }}</div>
+                <div style="margin-top:12px;">
+                    <a href="/static/project_documents/{{ doc[3] }}" target="_blank" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">View</a>
+                    <a href="/static/project_documents/{{ doc[3] }}" download style="background:#16a34a;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No documents shared yet.</p>
+        {% endif %}
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);margin-bottom:24px;">
+        <h3 style="margin-top:0;">Upload Your Documents</h3>
+
+        <form method="post" action="/customer/project/{{ project[0] }}/upload" enctype="multipart/form-data">
+            <div style="margin-bottom:16px;">
+                <label>Title</label>
+                <input type="text" name="title" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>Description</label>
+                <textarea name="description" rows="5" style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;"></textarea>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>File</label>
+                <input type="file" name="file" required style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Upload Document
+            </button>
+        </form>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">My Uploaded Documents</h3>
+
+        {% if uploads %}
+            {% for upload in uploads %}
+            <div style="padding:16px 0;border-bottom:1px solid #e5e7eb;">
+                <div style="font-weight:700;color:#0b1f4d;">{{ upload[1] }}</div>
+                <div style="margin-top:8px;">{{ upload[2] or '' }}</div>
+                <div style="margin-top:8px;color:#6b7280;font-size:14px;">{{ upload[4] }}</div>
+                <div style="margin-top:12px;">
+                    <a href="/static/customer_project_uploads/{{ upload[3] }}" target="_blank" style="background:#2563eb;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">View</a>
+                    <a href="/static/customer_project_uploads/{{ upload[3] }}" download style="background:#16a34a;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>You have not uploaded any documents yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

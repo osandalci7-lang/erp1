@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="employees-header">
+    <h1>Projects</h1>
+</div>
+
+<div style="margin:20px 0;">
+    <a class="register-btn" href="/admin/project/new">+ Create Project</a>
+</div>
+
+<table class="employee-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Project Code</th>
+            <th>Project Title</th>
+            <th>Ship</th>
+            <th>Customer</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for project in projects %}
+        <tr onclick="window.location='/admin/project/{{ project[0] }}'" class="employee-row">
+            <td>{{ project[0] }}</td>
+            <td>{{ project[1] or '' }}</td>
+            <td>{{ project[2] or '' }}</td>
+            <td>{{ project[3] or '' }}</td>
+            <td>{{ (project[4] or '') ~ ' ' ~ (project[5] or '') }}</td>
+            <td>{{ project[6] or '' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not projects %}
+<p style="margin-top:20px;">No projects created yet.</p>
+{% endif %}
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

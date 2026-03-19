@@ -1,0 +1,52 @@
+{% extends layout_template %}
+
+{% block content %}
+<h1>My Profile</h1>
+
+<div class="employee-details-grid">
+
+<div class="detail-card"><label>ID</label><span>{{employee[0]}}</span></div>
+<div class="detail-card"><label>Name</label><span>{{employee[1]}}</span></div>
+<div class="detail-card"><label>Position</label><span>{{employee[2]}}</span></div>
+<div class="detail-card"><label>Department</label><span>{{employee[3]}}</span></div>
+<div class="detail-card"><label>Email</label><span>{{employee[4]}}</span></div>
+<div class="detail-card"><label>Phone</label><span>{{employee[5]}}</span></div>
+<div class="detail-card"><label>Status</label><span>{{employee[6]}}</span></div>
+<div class="detail-card"><label>Address</label><span>{{employee[7]}}</span></div>
+<div class="detail-card"><label>Emergency Contact</label><span>{{employee[8]}}</span></div>
+<div class="detail-card"><label>Contract Start</label><span>{{employee[9]}}</span></div>
+<div class="detail-card"><label>Contract End</label><span>{{employee[10]}}</span></div>
+<div class="detail-card"><label>Company Car</label><span>{{employee[11]}}</span></div>
+<div class="detail-card"><label>Vehicle Plate</label><span>{{employee[12]}}</span></div>
+<div class="detail-card"><label>Vehicle License</label><span>{{employee[13] if employee[13] else 'No document'}}</span></div>
+
+</div>
+
+<style>
+.employee-details-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px;
+    margin-top:20px;
+    width:100%;
+}
+.detail-card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06);
+    min-width:0;
+}
+.detail-card label{
+    display:block;
+    color:#6b7280;
+    margin-bottom:8px;
+}
+.detail-card span{
+    font-weight:600;
+    word-break:break-word;
+}
+</style>
+
+
+{% endblock %}

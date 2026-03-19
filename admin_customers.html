@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Customers</h1>
+
+<div style="margin-top:30px; background:#fff; padding:24px; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="border-bottom:1px solid #e5e7eb; text-align:left;">
+                <th style="padding:12px;">ID</th>
+                <th style="padding:12px;">Name</th>
+                <th style="padding:12px;">Surname</th>
+                <th style="padding:12px;">Company</th>
+                <th style="padding:12px;">Mobile</th>
+                <th style="padding:12px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:12px;">{{ customer[0] }}</td>
+                <td style="padding:12px;">{{ customer[3] }}</td>
+                <td style="padding:12px;">{{ customer[4] }}</td>
+                <td style="padding:12px;">{{ customer[8] }}</td>
+                <td style="padding:12px;">{{ customer[5] }}</td>
+                <td style="padding:12px;">
+                    <a href="/admin/customer/{{ customer[0] }}" style="background:#0b1f4d;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if not customers %}
+    <p style="margin-top:20px;">No customers registered yet.</p>
+    {% endif %}
+</div>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

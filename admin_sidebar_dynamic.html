@@ -1,0 +1,59 @@
+{% if user %}
+<div class="sidebar-profile" style="text-align:center;padding:16px 0 20px;border-bottom:1px solid rgba(255,255,255,0.15);margin-bottom:16px;">
+  {% if user['profile_photo'] %}
+    <img src="/static/profile_photos/{{ user['profile_photo'] }}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);">
+  {% else %}
+    <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto;">👤</div>
+  {% endif %}
+  <div style="margin-top:10px;font-weight:600;font-size:15px;color:white;">{{ user['name'] }}</div>
+  <div style="font-size:12px;color:#93c5fd;margin-top:4px;">{{ user['position'] or user['role'] }}</div>
+</div>
+{% endif %}
+
+<div style="display:flex;flex-direction:column;gap:4px;">
+  <a href="{{ dashboard_url }}" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🏠 Dashboard</a>
+  {% if has_permission(user, "employee_list_view") %}
+  <a href="/admin/employees" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">👥 Employees</a>
+  {% endif %}
+  {% if has_permission(user, "visitor_view") %}
+  <a href="/admin/visitors" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🪪 Visitors</a>
+  {% endif %}
+  {% if has_permission(user, "customer_view") %}
+  <a href="/admin/customers" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🏢 Customers</a>
+  {% endif %}
+  {% if has_permission(user, "project_view") %}
+  <a href="/projects" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📁 Projects</a>
+  {% endif %}
+  {% if has_permission(user, "ship_view") %}
+  <a href="/admin/ships" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🚢 Ships</a>
+  {% endif %}
+  {% if has_permission(user, "training_library_view") %}
+  <a href="/admin/trainings" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📚 Trainings</a>
+  {% endif %}
+  {% if has_permission(user, "training_assignment_view") %}
+  <a href="/admin/training-assignments" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📋 Training Assignments</a>
+  {% endif %}
+  <a href="/permits" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📋 Permits</a>
+  {% if user and user['role'] == 'admin' %}
+  <a href="/admin/financial" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📊 Financial</a>
+  {% endif %}
+  <a href="/admin/news" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📰 News</a>
+  <a href="/admin/settings" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">⚙️ Settings</a>
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.15);">
+    <a href="/logout" style="color:#fca5a5;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🚪 Logout</a>
+  </div>
+</div>
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>

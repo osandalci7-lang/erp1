@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{% if employee and employee[0] != 'new' %}Edit Employee{% else %}Add Employee{% endif %}</h1>
+
+<form method="post" action="{% if employee and employee[0] != 'new' %}/admin/employee/update/{{employee[0]}}{% else %}/admin/employee/create{% endif %}" class="employee-edit-form">
+
+    <div class="employee-form-grid">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" value="{{ employee[1] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" value="{{ employee[2] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="text" name="password" value="{{ employee[3] if employee else '' }}">
+        </div>
+
+    <div class="form-group">
+           <label>Position</label>
+           <select name="position">
+           <option value="">Select Position</option>
+           <option value="Managing Director" {% if employee and employee[4] == "Managing Director" %}selected{% endif %}>Managing Director</option>
+           <option value="Operation Manager" {% if employee and employee[4] == "Operation Manager" %}selected{% endif %}>Operation Manager</option>
+           <option value="Project Manager" {% if employee and employee[4] == "Project Manager" %}selected{% endif %}>Project Manager</option>
+           <option value="Project Leader" {% if employee and employee[4] == "Project Leader" %}selected{% endif %}>Project Leader</option>
+           <option value="Technical Manager" {% if employee and employee[4] == "Technical Manager" %}selected{% endif %}>Technical Manager</option>
+           <option value="Technical Crew" {% if employee and employee[4] == "Technical Crew" %}selected{% endif %}>Technical Crew</option>
+           <option value="Finance Manager" {% if employee and employee[4] == "Finance Manager" %}selected{% endif %}>Finance Manager</option>
+           <option value="Assistant Controller" {% if employee and employee[4] == "Assistant Controller" %}selected{% endif %}>Assistant Controller</option>
+           <option value="Purchaser" {% if employee and employee[4] == "Purchaser" %}selected{% endif %}>Purchaser</option>
+           <option value="Marketing Manager" {% if employee and employee[4] == "Marketing Manager" %}selected{% endif %}>Marketing Manager</option>
+           <option value="Office Manager" {% if employee and employee[4] == "Office Manager" %}selected{% endif %}>Office Manager</option>
+           <option value="Welder" {% if employee and employee[4] == "Welder" %}selected{% endif %}>Welder</option>
+           <option value="Driver" {% if employee and employee[4] == "Driver" %}selected{% endif %}>Driver</option>
+           <option value="Warehouse Crew" {% if employee and employee[4] == "Warehouse Crew" %}selected{% endif %}>Warehouse Crew</option>
+           <option value="Warehouse Manager" {% if employee and employee[4] == "Warehouse Manager" %}selected{% endif %}>Warehouse Manager</option>
+           <option value="HR Manager" {% if employee and employee[4] == "HR Manager" %}selected{% endif %}>HR Manager</option>
+           <option value="HR Officer" {% if employee and employee[4] == "HR Officer" %}selected{% endif %}>HR Officer</option>
+           <option value="HSEQ Officer" {% if employee and employee[4] == "HSEQ Officer" %}selected{% endif %}>HSEQ Officer</option>
+           <option value="HSEQ Manager" {% if employee and employee[4] == "HSEQ Manager" %}selected{% endif %}>HSEQ Manager</option>
+           <option value="Dock Master" {% if employee and employee[4] == "Dock Master" %}selected{% endif %}>Dock Master</option>
+           <option value="Dock Operator" {% if employee and employee[4] == "Dock Operator" %}selected{% endif %}>Dock Operator</option>
+           <option value="Assistant" {% if employee and employee[4] == "Assistant" %}selected{% endif %}>Assistant</option>
+           <option value="Intern" {% if employee and employee[4] == "Intern" %}selected{% endif %}>Intern</option>
+           <option value="Crew" {% if employee and employee[4] == "Crew" %}selected{% endif %}>Crew</option>
+           </select>
+       </div>
+
+
+        <div class="form-group">
+            <label>Department</label>
+            <input type="text" name="department" value="{{ employee[5] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="text" name="email" value="{{ employee[6] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="phone" value="{{ employee[7] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <input type="text" name="status" value="{{ employee[8] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            <input type="text" name="address" value="{{ employee[9] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Emergency Contact</label>
+            <input type="text" name="emergency_contact" value="{{ employee[10] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Contract Start</label>
+            <input type="date" name="contract_start" value="{{ employee[11] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Contract End</label>
+            <input type="date" name="contract_end" value="{{ employee[12] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Company Car</label>
+            <input type="text" name="company_car" value="{{ employee[13] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Plate</label>
+            <input type="text" name="vehicle_plate" value="{{ employee[14] if employee else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle License</label>
+            <input type="text" name="vehicle_license" value="{{ employee[15] if employee else '' }}">
+        </div>
+    </div>
+
+    <div style="margin-top:20px;">
+        <button type="submit" class="register-btn">Save Employee</button>
+        <a href="/admin/employees" class="download-btn" style="text-decoration:none;">Cancel</a>
+    </div>
+
+</form>
+
+<style>
+.employee-edit-form{
+    max-width:1200px;
+}
+
+.employee-form-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+    margin-top:20px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d7dce3;
+    border-radius:10px;
+    background:#fff;
+    box-sizing:border-box;
+}
+
+</style>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

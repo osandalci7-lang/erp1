@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="employees-header">
+    <h1>Ships in Yard</h1>
+</div>
+
+<div style="margin:20px 0;">
+    <a class="register-btn" href="/admin/ship/new">+ Add Ship</a>
+</div>
+
+<table class="employee-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ship Name</th>
+            <th>Tonnage</th>
+            <th>Flag</th>
+            <th>Berth / Location</th>
+            <th>Company</th>
+            <th>Arrival</th>
+            <th>Departure</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for ship in ships %}
+        <tr onclick="window.location='/admin/ship/{{ ship[0] }}'" class="employee-row">
+            <td>{{ ship[0] }}</td>
+            <td>{{ ship[1] or '' }}</td>
+            <td>{{ ship[2] or '' }}</td>
+            <td>{{ ship[3] or '' }}</td>
+            <td>{{ ship[4] or '' }}</td>
+            <td>{{ ship[5] or '' }}</td>
+            <td>{{ ship[6] or '' }}</td>
+            <td>{{ ship[7] or '' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not ships %}
+<p style="margin-top:20px;">No ships listed in yard yet.</p>
+{% endif %}
+
+{% endblock %}
+<style>
+.employee-table{width:100%;border-collapse:collapse;}
+.employee-table th,.employee-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+.employee-table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  .employee-table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .employee-table th,.employee-table td{padding:8px 10px;font-size:13px;}
+}
+</style>

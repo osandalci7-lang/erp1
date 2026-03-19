@@ -1,0 +1,52 @@
+<div class="employee-tabs">
+    <a href="/admin/employee/{{ emp_id }}"
+       class="{% if request.url.path == '/admin/employee/' ~ emp_id|string %}active{% endif %}">
+        Personal Details
+    </a>
+
+    <a href="/admin/employee/{{ emp_id }}/contracts"
+       class="{% if request.url.path == '/admin/employee/' ~ emp_id|string ~ '/contracts' %}active{% endif %}">
+        Contracts
+    </a>
+
+    <a href="/admin/employee/{{ emp_id }}/certificates"
+       class="{% if request.url.path == '/admin/employee/' ~ emp_id|string ~ '/certificates' %}active{% endif %}">
+        Certificates
+    </a>
+
+    <a href="/admin/employee/{{ emp_id }}/health"
+       class="{% if request.url.path == '/admin/employee/' ~ emp_id|string ~ '/health' %}active{% endif %}">
+        Health
+    </a>
+
+    <a href="/admin/employee/{{ emp_id }}/assets"
+       class="{% if request.url.path == '/admin/employee/' ~ emp_id|string ~ '/assets' %}active{% endif %}">
+        Staff Assets
+    </a>
+
+    <a href="/admin/employee/{{ emp_id }}/trainings"
+       class="{% if '/admin/employee/' ~ emp_id|string ~ '/training' in request.url.path or '/admin/employee/' ~ emp_id|string ~ '/trainings' in request.url.path %}active{% endif %}">
+        Training
+    </a>
+</div>
+
+<style>
+.employee-tabs{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    margin:10px 0 18px 0;
+    flex-wrap:wrap;
+}
+.employee-tabs a{
+    text-decoration:none;
+    color:#111827;
+    font-weight:600;
+    padding:10px 18px;
+    border-radius:10px;
+}
+.employee-tabs a.active{
+    background:#0b1f4d;
+    color:white;
+}
+</style>

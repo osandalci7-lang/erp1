@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1 style="margin:0;">Confined Space Permit #{{ permit.id }}</h1>
+  <a href="/permits" style="padding:8px 16px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">← Back</a>
+</div>
+
+<div style="background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+
+  <div style="background:#0b1f4d;color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;opacity:0.7;">F004.V2.1-8-2024</div>
+      <h2 style="margin:4px 0 0;font-size:18px;">ENCLOSED SPACES PERMIT</h2>
+    </div>
+    <div>
+      {% if permit.status == 'approved' %}
+      <span style="background:#10b981;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">✅ APPROVED</span>
+      {% elif permit.status == 'pending' %}
+      <span style="background:#f59e0b;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">⏳ PENDING</span>
+      {% else %}
+      <span style="background:#ef4444;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">❌ REJECTED</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">General Information</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><span style="font-size:12px;color:#6b7280;">Vessel</span><div style="font-weight:600;">{{ permit.ship_name or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Location</span><div style="font-weight:600;">{{ permit.location or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Filled by</span><div style="font-weight:600;">{{ permit.filled_by_name or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Date</span><div style="font-weight:600;">{{ permit.filled_at[:16] if permit.filled_at else '-' }}</div></div>
+      {% if permit.approved_by_name %}
+      <div><span style="font-size:12px;color:#6b7280;">Approved by</span><div style="font-weight:600;">{{ permit.approved_by_name }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Approved at</span><div style="font-weight:600;">{{ permit.approved_at[:16] if permit.approved_at else '-' }}</div></div>
+      {% endif %}
+    </div>
+    <div style="margin-top:12px;"><span style="font-size:12px;color:#6b7280;">Work Description</span><div style="font-weight:600;margin-top:4px;">{{ permit.work_description or '-' }}</div></div>
+  </div>
+
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Tank Watch Checklist</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% set checks = [
+        (permit.safety_instructions, "Aware of safety instructions"),
+        (permit.space_investigated, "Enclosed space has been investigated"),
+        (permit.adjacent_investigated, "Adjacent spaces investigated"),
+        (permit.ventilation_present, "Sufficient ventilation present"),
+        (permit.low_voltage_lighting, "Low voltage lighting present"),
+        (permit.low_voltage_equipment, "Equipment under low voltage"),
+        (permit.safe_working_conditions, "Safe working conditions agreed"),
+        (permit.ppe_in_use, "PPE in use"),
+        (permit.other_risks_examined, "Other risks examined")
+      ] %}
+      {% for val, label in checks %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if val %}
+        <span style="color:#10b981;font-size:18px;">✅</span>
+        {% else %}
+        <span style="color:#ef4444;font-size:18px;">❌</span>
+        {% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if atm %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Atmosphere Measurements</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#f3f4f6;">
+        <th style="padding:8px;border:1px solid #e5e7eb;">Date</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">O2</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">LEL</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">PPM</th>
+      </tr></thead>
+      <tbody>
+        {% for m in atm %}
+        <tr>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ m.date }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ m.time }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.o2 }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.lel }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.ppm }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if entries %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Entry List</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#f3f4f6;">
+        <th style="padding:8px;border:1px solid #e5e7eb;">Date</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Name</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time In</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time Out</th>
+      </tr></thead>
+      <tbody>
+        {% for e in entries %}
+        <tr>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.date }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.name }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.time_in }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.time_out }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {% if permit.remarks %}
+  <div style="padding:20px;">
+    <h3 style="color:#0b1f4d;margin:0 0 10px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+    <p style="margin:0;color:#374151;">{{ permit.remarks }}</p>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endblock %}

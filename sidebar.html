@@ -1,0 +1,22 @@
+{% if user %}
+<div class="sidebar-profile" style="text-align:center;padding:16px 0 20px;border-bottom:1px solid rgba(255,255,255,0.15);margin-bottom:16px;">
+  {% if user['profile_photo'] %}
+    <img src="/static/profile_photos/{{ user['profile_photo'] }}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.3);">
+  {% else %}
+    <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto;">👤</div>
+  {% endif %}
+  <div style="margin-top:10px;font-weight:600;font-size:15px;color:white;">{{ user['name'] }}</div>
+  <div style="font-size:12px;color:#93c5fd;margin-top:4px;">{{ user['position'] or user['role'] }}</div>
+</div>
+{% endif %}
+
+<div style="display:flex;flex-direction:column;gap:4px;">
+  <a href="/dashboard" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🏠 Dashboard</a>
+  <a href="/payslips" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">💰 My Payslips</a>
+  <a href="/contract" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📄 My Contract</a>
+  <a href="/documents" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📁 My Documents</a>
+  <a href="/trainings" style="color:white;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">📚 My Trainings</a>
+  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.15);">
+    <a href="/logout" style="color:#fca5a5;text-decoration:none;font-size:15px;padding:10px 12px;border-radius:8px;display:block;">🚪 Logout</a>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+{% extends "public_base.html" %}
+
+{% block content %}
+
+<style>
+.home-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:70vh;
+}
+
+.home-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(280px, 380px));
+    gap:30px;
+    align-items:stretch;
+}
+
+.home-card{
+    background:white;
+    padding:50px 36px;
+    border-radius:14px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:420px;
+}
+
+.home-card h2{
+    margin-top:0;
+    margin-bottom:18px;
+    font-size:30px;
+    color:#0b1f4d;
+}
+
+.home-card p{
+    margin:0;
+    color:#555;
+    line-height:1.6;
+    font-size:17px;
+}
+
+.card-actions{
+    margin-top:30px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+}
+
+.portal-button{
+    display:inline-block;
+    background:#0b1f4d;
+    color:white;
+    padding:15px 28px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:600;
+    min-width:110px;
+}
+
+.portal-button:hover{
+    background:#162c63;
+}
+
+.secondary-link{
+    text-decoration:none;
+    color:#0b1f4d;
+    font-weight:600;
+}
+
+@media (max-width: 1200px){
+    .home-grid{
+        grid-template-columns:1fr;
+        max-width:420px;
+    }
+
+    .home-card{
+        min-height:auto;
+    }
+}
+</style>
+
+<div class="home-container">
+    <div class="home-grid">
+
+        <div class="home-card">
+            <div>
+                <h2>Employee Portal</h2>
+                <p>Employees can sign in with their username and password to access their personal dashboard.</p>
+            </div>
+
+            <div class="card-actions">
+                <a href="/login" class="portal-button">Login</a>
+            </div>
+        </div>
+
+        <div class="home-card">
+            <div>
+                <h2>For Visitors</h2>
+                <p>Visitors can complete the registration form and safety orientation to request access to Norden Shipyard.</p>
+            </div>
+
+            <div class="card-actions">
+                <a href="/visitor/register" class="portal-button">Register</a>
+                <a href="/visitor/login" class="secondary-link">Already Registered? Login</a>
+            </div>
+        </div>
+
+        <div class="home-card">
+            <div>
+                <h2>For Customers</h2>
+                <p>Customers can complete the registration form and sign in to access their own portal and information.</p>
+            </div>
+
+            <div class="card-actions">
+                <a href="/customer/register" class="portal-button">Register</a>
+                <a href="/customer/login" class="secondary-link">Already Registered? Login</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

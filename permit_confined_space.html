@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+
+<div style="background:#0b1f4d;color:white;padding:16px 20px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+  <div>
+    <div style="font-size:11px;opacity:0.7;">F004.V2.1-8-2024</div>
+    <h2 style="margin:4px 0 0;font-size:18px;">ENCLOSED SPACES PERMIT</h2>
+    <div style="font-size:12px;opacity:0.8;">Vergunning Besloten Ruimtes</div>
+  </div>
+  <div style="text-align:right;font-size:12px;opacity:0.8;">Norden Shipyard SMS</div>
+</div>
+
+{% if success %}
+<div style="background:#d1fae5;color:#065f46;padding:14px;border-left:4px solid #10b981;margin-top:16px;border-radius:8px;font-weight:600;">
+  Permit submitted! Waiting for approval.
+</div>
+{% endif %}
+
+<form method="post" action="/permits/confined-space/new" style="background:white;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <h3 style="color:#0b1f4d;margin:0 0 16px;font-size:14px;text-transform:uppercase;">General Information</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div>
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Vessel *</label>
+      <select id="ship_select" name="ship_id" required style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <option value="">-- Select vessel --</option>
+        {% for ship in ships %}
+        <option value="{{ ship[0] }}">{{ ship[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project</label>
+      <select id="project_select" name="project_id" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+        <option value="">-- Select project --</option>
+        {% for project in projects %}
+        <option value="{{ project[0] }}" data-ship-id="{{ project[2] }}">{{ project[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Location *</label>
+      <input type="text" name="location" required placeholder="e.g. Cargo Hold 2, Tank 3P" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+    </div>
+    <div>
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Date & Time</label>
+      <input type="datetime-local" name="permit_date" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+    </div>
+  </div>
+  <div style="margin-top:14px;">
+    <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Work to be done *</label>
+    <textarea name="work_description" required rows="3" placeholder="Describe the work..." style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;"></textarea>
+  </div>
+</div>
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#713f12;">
+    The tank watch is to remain present at the entrance and keep in contact with the person inside the enclosed space
+  </div>
+  <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Obligations for Tank Watch</h3>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="safety_instructions" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Veiligheidsinstructies bekend</div><div style="font-size:12px;color:#6b7280;">Aware of safety instructions</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="space_investigated" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Besloten ruimte onderzocht</div><div style="font-size:12px;color:#6b7280;">Enclosed space has been investigated</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="adjacent_investigated" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Aangrenzende ruimtes onderzocht</div><div style="font-size:12px;color:#6b7280;">Spaces next to enclosed space have been investigated</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="ventilation_present" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Voldoende ventilatie aanwezig</div><div style="font-size:12px;color:#6b7280;">Sufficient means of ventilation present</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="low_voltage_lighting" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Verlichting onder veilige spanning</div><div style="font-size:12px;color:#6b7280;">Low voltage lighting present</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="low_voltage_equipment" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Gereedschap onder veilige spanning</div><div style="font-size:12px;color:#6b7280;">Equipment under low voltage</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="safe_working_conditions" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Werkvoorwaarden vastgesteld</div><div style="font-size:12px;color:#6b7280;">Safe working conditions agreed</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="ppe_in_use" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Persoonlijke beschermingsmiddelen worden gebruikt</div><div style="font-size:12px;color:#6b7280;">Personal protective equipment in use</div></div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;">
+      <input type="checkbox" name="other_risks_examined" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#0b1f4d;">
+      <div><div style="font-weight:600;font-size:14px;">Andere risicos beoordeeld</div><div style="font-size:12px;color:#6b7280;">Other risks of this work have been examined</div></div>
+    </label>
+  </div>
+  <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-top:14px;font-size:13px;color:#991b1b;font-weight:600;">
+    No start of work before all measures mentioned above have been taken
+  </div>
+</div>
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Atmosphere Measurements</h3>
+  <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#f3f4f6;">
+          <th style="padding:10px;border:1px solid #e5e7eb;">#</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Date</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">O2 (%)</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">LEL (%)</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">PPM</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(5) %}
+        <tr>
+          <td style="padding:6px 10px;border:1px solid #e5e7eb;color:#9ca3af;">{{ i+1 }}</td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="date" name="atm_date_{{ i }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="atm_time_{{ i }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_o2_{{ i }}" step="0.1" placeholder="20.9" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_lel_{{ i }}" step="0.1" placeholder="0" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="number" name="atm_ppm_{{ i }}" placeholder="0" style="width:100%;padding:6px;border:none;font-size:13px;text-align:center;"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11px;color:#6b7280;margin-top:8px;font-style:italic;">* Measurements may only be taken by qualified people with certified equipment</p>
+</div>
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Entry List</h3>
+  <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="background:#f3f4f6;">
+          <th style="padding:10px;border:1px solid #e5e7eb;">Date</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Name</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time In</th>
+          <th style="padding:10px;border:1px solid #e5e7eb;">Time Out</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in range(6) %}
+        <tr>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="date" name="entry_date_{{ i }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="text" name="entry_name_{{ i }}" placeholder="Full name" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="entry_in_{{ i }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+          <td style="padding:4px;border:1px solid #e5e7eb;"><input type="time" name="entry_out_{{ i }}" style="width:100%;padding:6px;border:none;font-size:13px;"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Link Risk Assessment</h3>
+  <select name="risk_assessment_id" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;">
+    <option value="">-- RA module coming soon --</option>
+  </select>
+</div>
+
+<div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+  <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+  <textarea name="remarks" rows="3" placeholder="Additional remarks..." style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;"></textarea>
+</div>
+
+<div style="padding:20px;background:#f9fafb;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;">
+  <a href="/permits" style="padding:10px 20px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">Back</a>
+  <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">Submit for Approval</button>
+</div>
+
+</form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const shipSelect = document.getElementById("ship_select");
+  const projectSelect = document.getElementById("project_select");
+  if (!shipSelect || !projectSelect) return;
+  
+  const allOptions = Array.from(projectSelect.options);
+  
+  function filterProjects() {
+    const shipId = shipSelect.value;
+    const currentVal = projectSelect.value;
+    
+    // Tum option'lari kaldir
+    while (projectSelect.options.length > 0) projectSelect.remove(0);
+    
+    // Bos option ekle
+    const emptyOpt = document.createElement("option");
+    emptyOpt.value = "";
+    emptyOpt.text = "-- Select project --";
+    projectSelect.add(emptyOpt);
+    
+    // Sadece secilen gemiye ait projeleri ekle
+    allOptions.forEach(opt => {
+      if (opt.value === "") return;
+      if (!shipId || opt.dataset.shipId === shipId) {
+        projectSelect.add(opt.cloneNode(true));
+      }
+    });
+    
+    // Onceki secimi koru
+    projectSelect.value = currentVal;
+  }
+  
+  shipSelect.addEventListener("change", filterProjects);
+  if (shipSelect.value) filterProjects();
+});
+</script>
+{% endblock %}

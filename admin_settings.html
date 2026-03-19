@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Admin Settings</h1>
+<div style="margin-bottom:24px;">
+  <a href="/admin/settings/permissions" style="background:#0b1f4d;color:white;text-decoration:none;padding:10px 20px;border-radius:10px;font-weight:600;font-size:14px;">⚙️ Permission Management</a>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1200px;">
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">Update Admin Email</h3>
+
+        <form method="post" action="/admin/settings/email">
+            <div style="margin-bottom:16px;">
+                <label>Current Email</label>
+                <input type="email" name="current_email" value="{{ user['email'] if user and user['email'] else '' }}" disabled
+                       style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#f9fafb;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>New Email</label>
+                <input type="email" name="email" required
+                       style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <button type="submit"
+                    style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Update Email
+            </button>
+        </form>
+    </div>
+
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <h3 style="margin-top:0;">Change Password</h3>
+
+        <form method="post" action="/admin/settings/password">
+            <div style="margin-bottom:16px;">
+                <label>Current Password</label>
+                <input type="password" name="current_password" required
+                       style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>New Password</label>
+                <input type="password" name="new_password" required
+                       style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label>Confirm New Password</label>
+                <input type="password" name="confirm_password" required
+                       style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+            </div>
+
+            <button type="submit"
+                    style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+                Change Password
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);max-width:1200px;">
+    <h3 style="margin-top:0;">Upload Yard Photo (Safety Orientation)</h3>
+    <form method="post" action="/admin/settings/yard-photo" enctype="multipart/form-data">
+        <div style="margin-bottom:16px;">
+            <label>Select Yard Photo</label>
+            <input type="file" name="file" accept="image/*" required
+                   style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;">
+        </div>
+        <button type="submit" style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+            Upload Yard Photo
+        </button>
+    </form>
+</div>
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);max-width:1200px;">
+    <h3 style="margin-top:0;">Upload Portal Logo</h3>
+
+    <form method="post" action="/admin/settings/logo" enctype="multipart/form-data">
+        <div style="margin-bottom:16px;">
+            <label>Select Logo</label>
+            <input type="file" name="file" accept="image/*" required
+                   style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;">
+        </div>
+
+        <button type="submit"
+                style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+            Upload Logo
+        </button>
+    </form>
+</div>
+<div style="margin-top:24px;background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.06);max-width:1200px;">
+    <h3 style="margin-top:0;">Upload Profile Photo</h3>
+
+    <form method="post" action="/admin/settings/profile-photo" enctype="multipart/form-data">
+        <div style="margin-bottom:16px;">
+            <label>Select Profile Photo</label>
+            <input type="file" name="file" accept="image/*" required
+                   style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;">
+        </div>
+
+        <button type="submit"
+                style="background:#0b1f4d;color:white;border:none;padding:12px 18px;border-radius:10px;font-weight:600;cursor:pointer;">
+            Upload Profile Photo
+        </button>
+    </form>
+</div>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

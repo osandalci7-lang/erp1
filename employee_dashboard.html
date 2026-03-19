@@ -1,0 +1,260 @@
+{% extends layout_template %}
+
+{% block content %}
+
+<h1>Welcome {{ user["name"] if user and user["name"] else "Employee" }}</h1>
+
+{% if user["role"] == "admin" or user.get("position") in ["Operation Manager", "Managing Director"] %}
+<div class="gate-widget" style="background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);padding:20px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div style="font-size:28px;">🚪</div>
+    <div style="flex:1;">
+        <div style="font-weight:700;font-size:16px;color:#0b1f4d;">Norden Gate</div>
+        <div id="gate-status-text" style="font-size:13px;color:#6b7280;margin-top:2px;">Checking...</div>
+    </div>
+    <button onclick="gateAction('open')" style="background:#16a34a;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;">🔓 Open</button>
+    <button onclick="gateAction('close')" style="background:#dc2626;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;">🔒 Close</button>
+</div>
+<script>
+async function gateAction(action) {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "...";
+    try {
+        const r = await fetch("/admin/gate/" + action, {credentials: 'include'});
+        const d = await r.json();
+        checkGateStatus();
+        btn.disabled = false;
+        btn.textContent = action === "open" ? "🔓 Open" : "🔒 Close";
+    } catch(e) {
+        btn.disabled = false;
+    }
+}
+async function checkGateStatus() {
+    try {
+        const r = await fetch("/admin/gate/status", {credentials: 'include'});
+        const d = await r.json();
+        const el = document.getElementById("gate-status-text");
+        el.textContent = "Status: " + d.status;
+        el.style.color = d.status === "open" ? "#16a34a" : "#dc2626";
+    } catch(e) {}
+}
+checkGateStatus();
+</script>
+{% endif %}
+<div class="summary-grid">
+    <div class="summary-card">
+        <span>Assigned Trainings</span>
+        <strong>{{ summary.training_count }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Completed Trainings</span>
+        <strong>{{ summary.completed_training_count }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Documents</span>
+        <strong>{{ summary.document_count }}</strong>
+    </div>
+
+    <div class="summary-card">
+        <span>Contract Status</span>
+        <strong>{{ summary.contract_status }}</strong>
+    </div>
+</div>
+
+<div class="employee-dashboard-grid">
+
+    <a href="/dashboard/profile" class="dashboard-box">
+        <h3>My Profile</h3>
+        <p>View your personal information</p>
+    </a>
+
+    <a href="/admin/employees" class="dashboard-box">
+        <h3>Employees</h3>
+        <p>View and manage employee records</p>
+    </a>
+
+    <a href="/admin/employees" class="dashboard-box">
+        <h3>Employee List</h3>
+        <p>View employee list</p>
+    </a>
+
+    <a href="/admin/customers" class="dashboard-box">
+        <h3>Customers</h3>
+        <p>View and manage customers</p>
+    </a>
+
+    <a href="/admin/visitors" class="dashboard-box">
+        <h3>Visitors</h3>
+        <p>View and manage visitors</p>
+    </a>
+
+    <a href="/admin/ships" class="dashboard-box">
+        <h3>Ships</h3>
+        <p>View ships in yard</p>
+    </a>
+
+    <a href="/projects" class="dashboard-box">
+        <h3>Projects</h3>
+        <p>Manage assigned projects and customer communication</p>
+    </a>
+
+    <a href="/admin/trainings" class="dashboard-box">
+        <h3>Training Library</h3>
+        <p>View and manage trainings</p>
+    </a>
+
+    <a href="/admin/training-assignments" class="dashboard-box">
+        <h3>Training Assignments</h3>
+        <p>Assign trainings to employees</p>
+    </a>
+
+    <a href="/contract" class="dashboard-box">
+        <h3>My Contract</h3>
+        <p>View and download your contracts</p>
+    </a>
+
+    <a href="/payslips" class="dashboard-box">
+        <h3>My Payslips</h3>
+        <p>View and download payslips</p>
+    </a>
+
+    <a href="/documents" class="dashboard-box">
+        <h3>My Documents</h3>
+        <p>Health and staff asset documents</p>
+    </a>
+
+    <a href="/trainings" class="dashboard-box">
+        <h3>My Trainings</h3>
+        <p>Complete assigned trainings</p>
+    </a>
+
+    <a href="/assets" class="dashboard-box">
+        <h3>My Assets</h3>
+        <p>View your assigned staff asset documents</p>
+    </a>
+
+    <a href="/permits" class="dashboard-box">
+        <h3>Permits</h3>
+        <p>View and manage work permits</p>
+    </a>
+    <a href="/news" class="dashboard-box">
+       <h3>News</h3>
+       <p>Latest company news and updates</p>
+    </a>
+
+    <a href="/settings" class="dashboard-box">
+        <h3>Settings</h3>
+        <p>Update your account settings</p>
+    </a>
+
+</div>
+
+<style>
+.employee-layout{
+    display:grid;
+    grid-template-columns: 1fr 260px;
+    gap:24px;
+    padding:24px;
+}
+
+.employee-content{
+    background:#f8fafc;
+    min-height:calc(100vh - 90px);
+    padding:10px 0;
+}
+
+.employee-profile-bar{
+    background:#ffffff;
+    border-left:1px solid #e5e7eb;
+    padding:20px;
+}
+
+.employee-profile-card{
+    position:sticky;
+    top:100px;
+    background:#fff;
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+
+.employee-avatar img{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:16px;
+}
+
+.employee-profile-info h3{
+    margin:0 0 8px 0;
+    font-size:24px;
+}
+
+.employee-profile-info p{
+    margin:6px 0;
+    color:#4b5563;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+    margin:24px 0 30px 0;
+}
+
+.summary-card{
+    background:#ffffff;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+
+.summary-card span{
+    display:block;
+    color:#6b7280;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+.summary-card strong{
+    font-size:28px;
+    color:#0b1f4d;
+}
+
+.employee-dashboard-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+}
+
+.dashboard-box{
+    display:block;
+    background:#ffffff;
+    border-radius:16px;
+    padding:28px;
+    text-decoration:none;
+    color:#111827;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06);
+    transition:0.2s ease;
+}
+
+.dashboard-box:hover{
+    transform:translateY(-2px);
+}
+
+.dashboard-box h3{
+    margin:0 0 12px 0;
+    color:#0b1f4d;
+}
+
+.dashboard-box p{
+    margin:0;
+    color:#6b7280;
+}
+</style>
+
+{% endblock %}

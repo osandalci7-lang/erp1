@@ -1,0 +1,123 @@
+ls /var/www/security_app/frontend/templates/ | grep permit
+cat > /var/www/security_app/frontend/templates/permit_hotwork.html << 'HTMLEOF'
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+  <div style="background:#7f1d1d;color:white;padding:16px 20px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;opacity:0.7;">Ver. 20/09/2024</div>
+      <h2 style="margin:4px 0 0;font-size:18px;">🔥 HOTWORK PERMIT</h2>
+      <div style="font-size:12px;opacity:0.8;">Grinding / Burning / Welding — Max. 12 hours</div>
+    </div>
+    <div style="text-align:right;font-size:12px;opacity:0.8;">Norden Shipyard SMS</div>
+  </div>
+  {% if success %}<div style="background:#d1fae5;color:#065f46;padding:14px;border-left:4px solid #10b981;margin-top:16px;border-radius:8px;font-weight:600;">✅ Permit submitted! Waiting for approval.</div>{% endif %}
+  <form method="post" action="/permits/hotwork/new" style="background:white;border-radius:0 0 12px 12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 16px;font-size:14px;text-transform:uppercase;">General Information</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Vessel *</label>
+        <select id="ship_select" name="ship_id" required style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"><option value="">-- Select vessel --</option>{% for ship in ships %}<option value="{{ ship[0] }}">{{ ship[1] }}</option>{% endfor %}</select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project</label>
+        <select id="project_select" name="project_id" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"><option value="">-- Select project --</option>{% for project in projects %}<option value="{{ project[0] }}" data-ship-id="{{ project[2] }}">{{ project[1] }}</option>{% endfor %}</select></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Location *</label>
+        <input type="text" name="location" required placeholder="e.g. Deck 2, Engine Room" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Date & Time</label>
+        <input type="datetime-local" name="permit_date" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+      </div>
+      <div style="margin-top:14px;"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Description of work *</label>
+      <textarea name="work_description" required rows="3" placeholder="Describe the hotwork activity..." style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;"></textarea></div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 1: Deliberation</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="risk_analysis" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Risk analysis drawn up</div><div style="font-size:12px;color:#6b7280;">Reviewed and approved by all parties</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="working_method" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Working method drawn up</div><div style="font-size:12px;color:#6b7280;">Approved by all parties</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="safety_procedures" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Safety procedures discussed</div><div style="font-size:12px;color:#6b7280;">Explained and approved by all parties</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="captain_approval" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Captain/Officer approval given</div><div style="font-size:12px;color:#6b7280;">Captain or officer of the ship gives approval</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="crew_aware" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">All crew members aware</div><div style="font-size:12px;color:#6b7280;">All crew members are informed of the works</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="performer_tested" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Performer knowledge tested</div><div style="font-size:12px;color:#6b7280;">Knowledge found to be sufficient</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 2: Preparation</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="workspace_cleared" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Workspace cleared & protected</div><div style="font-size:12px;color:#6b7280;">Free of oil and gas. LEL measured if explosive atmosphere possible.</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="designated_location" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Welding at designated location only</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ppe_selected" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">PPE discussed and selected</div><div style="font-size:12px;color:#6b7280;">Worn throughout the entire duration of work</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="materials_ok" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Materials & PPE in good condition</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_extinguisher" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Fire extinguisher(s) on location</div><div style="font-size:12px;color:#6b7280;">Minimum 2 fire extinguishers present and ready</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_retardant" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Fire retardant blankets in use</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fireguard_present" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">FireGuard MUST BE NOTIFIED</div><div style="font-size:12px;color:#6b7280;">Present, notified of start/stop of works</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="ventilation_ok" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Sufficient ventilation present</div><div style="font-size:12px;color:#6b7280;">Working outdoors preferred</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="fire_detection_isolated" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Auto fire detection insulated / LOTO</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="first_aid_ready" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">First-aid equipment provided</div><div style="font-size:12px;color:#6b7280;">Easy to reach and accessible</div></div></label>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 3: Completion</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="waste_disposed" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Waste disposed after completion</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="surfaces_cooled" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">All hot surfaces cooled down *</div></div></label>
+        <label style="display:flex;align-items:flex-start;gap:12px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;"><input type="checkbox" name="area_supervised" value="1" style="width:18px;height:18px;margin-top:2px;accent-color:#7f1d1d;"><div><div style="font-weight:600;font-size:14px;">Area supervised for 2 hours after *</div></div></label>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px;margin-top:14px;font-size:13px;color:#991b1b;font-weight:600;">⚠️ No start of work before all measures above have been taken.</div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Authorization — Signatories</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">FireGuard Name</label><input type="text" name="fireguard_name" placeholder="Full name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Project Leader Name</label><input type="text" name="project_leader_name" placeholder="Full name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">HSEQ Officer Name</label><input type="text" name="hseq_name" placeholder="Full name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+        <div><label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;">Person in Charge (Ship)</label><input type="text" name="ship_responsible_name" placeholder="Full name" style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;"></div>
+      </div>
+    </div>
+    <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+      <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+      <textarea name="remarks" rows="3" placeholder="Additional remarks..." style="width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;"></textarea>
+    </div>
+    <div style="padding:20px;background:#f9fafb;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;">
+      <a href="/permits" style="padding:10px 20px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">← Back</a>
+      <button type="submit" style="background:#7f1d1d;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;">🔥 Submit for Approval</button>
+    </div>
+  </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const shipSelect = document.getElementById("ship_select");
+  const projectSelect = document.getElementById("project_select");
+  if (!shipSelect || !projectSelect) return;
+  
+  const allOptions = Array.from(projectSelect.options);
+  
+  function filterProjects() {
+    const shipId = shipSelect.value;
+    const currentVal = projectSelect.value;
+    
+    // Tum option'lari kaldir
+    while (projectSelect.options.length > 0) projectSelect.remove(0);
+    
+    // Bos option ekle
+    const emptyOpt = document.createElement("option");
+    emptyOpt.value = "";
+    emptyOpt.text = "-- Select project --";
+    projectSelect.add(emptyOpt);
+    
+    // Sadece secilen gemiye ait projeleri ekle
+    allOptions.forEach(opt => {
+      if (opt.value === "") return;
+      if (!shipId || opt.dataset.shipId === shipId) {
+        projectSelect.add(opt.cloneNode(true));
+      }
+    });
+    
+    // Onceki secimi koru
+    projectSelect.value = currentVal;
+  }
+  
+  shipSelect.addEventListener("change", filterProjects);
+  if (shipSelect.value) filterProjects();
+});
+</script>
+{% endblock %}

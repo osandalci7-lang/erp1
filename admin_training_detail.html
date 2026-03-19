@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Training Detail</h1>
+
+<div class="training-card">
+
+    <h2>{{ training["title"] }}</h2>
+
+    <p><strong>Description:</strong> {{ training["description"] or "-" }}</p>
+    <p><strong>Category:</strong> {{ training["category"] or "-" }}</p>
+    <p><strong>Type:</strong> {{ training["content_type"] }}</p>
+    <p><strong>Mandatory:</strong> {{ "Yes" if training["is_mandatory"] else "No" }}</p>
+    <p><strong>Certificate:</strong> {{ "Yes" if training["has_certificate"] else "No" }}</p>
+    <p><strong>Created By:</strong> {{ training["created_by"] or "-" }}</p>
+    <p><strong>Created At:</strong> {{ training["created_at"] or "-" }}</p>
+
+    {% if training["content_type"] == "video" %}
+        <p>
+            <a class="view-btn" href="/static/trainings/videos/{{ training['file_path'] }}" target="_blank">
+                Open Video
+            </a>
+        </p>
+    {% elif training["content_type"] == "pdf" %}
+        <p>
+            <a class="view-btn" href="/static/trainings/pdfs/{{ training['file_path'] }}" target="_blank">
+                Open PDF
+            </a>
+        </p>
+    {% elif training["content_type"] == "slide" %}
+        <p>
+            <a class="view-btn" href="/static/trainings/slides/{{ training['file_path'] }}" target="_blank">
+                Open Slide
+            </a>
+        </p>
+    {% endif %}
+
+    <p style="margin-top:20px;">
+        <a class="back-btn" href="/admin/trainings">← Back to Training Library</a>
+    </p>
+
+</div>
+
+<style>
+.training-card{
+    background:#f7f7f7;
+    padding:24px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.06);
+    max-width:800px;
+}
+
+.training-card h2{
+    margin-bottom:20px;
+}
+
+.training-card p{
+    margin-bottom:12px;
+}
+
+.view-btn{
+    background:#3b82f6;
+    color:white;
+    padding:8px 12px;
+    border-radius:6px;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.back-btn{
+    background:#0b1f4d;
+    color:white;
+    padding:8px 12px;
+    border-radius:6px;
+    text-decoration:none;
+    display:inline-block;
+}
+</style>
+
+
+<style>
+table{width:100%;border-collapse:collapse;}
+table th,table td{padding:10px 12px;text-align:left;border-bottom:1px solid #e5e7eb;font-size:14px;}
+table th{background:#f9fafb;font-weight:600;color:#374151;}
+@media(max-width:900px){
+  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  table th,table td{padding:8px 10px;font-size:13px;}
+  .btn,button[type=submit]{width:100%;margin-bottom:8px;}
+  h1{font-size:20px;}
+  h2{font-size:18px;}
+  .grid{grid-template-columns:1fr !important;}
+}
+</style>
+
+{% endblock %}

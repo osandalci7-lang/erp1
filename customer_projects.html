@@ -1,0 +1,40 @@
+{% extends "visitor_portal_base.html" %}
+
+{% block content %}
+
+<div style="max-width:1200px;margin:0 auto;">
+    <h1 style="margin:0 0 24px 0;color:#0b1f4d;">My Projects</h1>
+
+    <div style="background:#fff;padding:24px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:1px solid #e5e7eb;text-align:left;">
+                    <th style="padding:12px;">Project Code</th>
+                    <th style="padding:12px;">Title</th>
+                    <th style="padding:12px;">Ship</th>
+                    <th style="padding:12px;">Berth</th>
+                    <th style="padding:12px;">Company</th>
+                    <th style="padding:12px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr onclick="window.location='/customer/project/{{ project[0] }}'" style="border-bottom:1px solid #f1f5f9;cursor:pointer;">
+                    <td style="padding:12px;">{{ project[1] }}</td>
+                    <td style="padding:12px;">{{ project[2] or '-' }}</td>
+                    <td style="padding:12px;">{{ project[4] or '-' }}</td>
+                    <td style="padding:12px;">{{ project[5] or '-' }}</td>
+                    <td style="padding:12px;">{{ project[6] or '-' }}</td>
+                    <td style="padding:12px;">{{ project[3] or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if not projects %}
+        <p style="margin-top:20px;">No projects linked to your account yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

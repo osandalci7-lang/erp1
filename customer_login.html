@@ -1,0 +1,40 @@
+{% extends "public_base.html" %}
+
+{% block content %}
+
+<div style="max-width:500px;margin:80px auto;background:#fff;padding:40px;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+<h1 style="margin-top:0;color:#0b1f4d;">Customer Login</h1>
+
+<p>Sign in to access your customer dashboard.</p>
+
+<form method="post" action="/customer/login" style="margin-top:30px;display:flex;flex-direction:column;gap:20px;">
+
+<div>
+<label>Username</label>
+<input type="text" name="username" required
+style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+</div>
+
+<div>
+<label>Password</label>
+<input type="password" name="password" required
+style="width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;">
+</div>
+
+<button type="submit"
+style="background:#0b1f4d;color:white;border:none;padding:14px;border-radius:10px;font-weight:600;cursor:pointer;">
+Login
+</button>
+
+</form>
+
+<div style="margin-top:20px;text-align:center;">
+<a href="/customer/register" style="color:#0b1f4d;font-weight:600;text-decoration:none;">
+Need an account? Register
+</a>
+</div>
+
+</div>
+
+{% endblock %}

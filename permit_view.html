@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:800px;margin:0 auto;">
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1 style="margin:0;">
+    {% if permit.permit_type == 'hotwork' %}🔥 Hotwork Permit #{{ permit.id }}
+    {% elif permit.permit_type == 'hdr' %}💧 HDR Permit #{{ permit.id }}
+    {% else %}Confined Space Permit #{{ permit.id }}{% endif %}
+  </h1>
+  <div style="display:flex;gap:8px;">
+    <a href="/permits/{{ permit.id }}/edit" style="padding:8px 16px;background:#f59e0b;color:white;border-radius:8px;text-decoration:none;font-weight:600;">✏️ Edit</a>
+    <a href="/permits" style="padding:8px 16px;border:1px solid #d1d5db;border-radius:8px;text-decoration:none;color:#374151;font-weight:600;">← Back</a>
+  </div>
+</div>
+
+<div style="background:white;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.06);overflow:hidden;">
+
+  <div style="background:{% if permit.permit_type == 'hotwork' %}#7f1d1d{% elif permit.permit_type == 'hdr' %}#14532d{% else %}#0b1f4d{% endif %};color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:11px;opacity:0.7;">
+        {% if permit.permit_type == 'hotwork' %}Ver. 20/09/2024
+        {% elif permit.permit_type == 'hdr' %}HDR / Verfspuit Vergunning
+        {% else %}F004.V2.1-8-2024{% endif %}
+      </div>
+      <h2 style="margin:4px 0 0;font-size:18px;">
+        {% if permit.permit_type == 'hotwork' %}HOTWORK PERMIT
+        {% elif permit.permit_type == 'hdr' %}HIGH PRESSURE CLEANING / PAINT SPRAY PERMIT
+        {% else %}ENCLOSED SPACES PERMIT{% endif %}
+      </h2>
+    </div>
+    <div>
+      {% if permit.status == 'approved' %}<span style="background:#10b981;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">✅ APPROVED</span>
+      {% elif permit.status == 'pending' %}<span style="background:#f59e0b;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">⏳ PENDING</span>
+      {% else %}<span style="background:#ef4444;color:white;padding:6px 14px;border-radius:8px;font-weight:600;">❌ REJECTED</span>{% endif %}
+    </div>
+  </div>
+
+  <!-- GENERAL INFO -->
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">General Information</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div><span style="font-size:12px;color:#6b7280;">Vessel</span><div style="font-weight:600;">{{ permit.ship_name or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Location</span><div style="font-weight:600;">{{ permit.location or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Project</span><div style="font-weight:600;">{{ permit.project_title or '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Date</span><div style="font-weight:600;">{{ permit.filled_at[:16] if permit.filled_at else '-' }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Filled by</span><div style="font-weight:600;">{{ permit.filled_by_name or '-' }}</div></div>
+      {% if permit.approved_by_name %}
+      <div><span style="font-size:12px;color:#6b7280;">Approved by</span><div style="font-weight:600;">{{ permit.approved_by_name }}</div></div>
+      <div><span style="font-size:12px;color:#6b7280;">Approved at</span><div style="font-weight:600;">{{ permit.approved_at[:16] if permit.approved_at else '-' }}</div></div>
+      {% endif %}
+    </div>
+    <div style="margin-top:12px;"><span style="font-size:12px;color:#6b7280;">Work Description</span><div style="font-weight:600;margin-top:4px;">{{ permit.work_description or '-' }}</div></div>
+  </div>
+
+  {% if permit.permit_type == 'confined_space' %}
+  <!-- CONFINED SPACE CHECKLIST -->
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Tank Watch Checklist</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% set checks = [
+        (permit.safety_instructions, "Aware of safety instructions"),
+        (permit.space_investigated, "Enclosed space investigated"),
+        (permit.adjacent_investigated, "Adjacent spaces investigated"),
+        (permit.ventilation_present, "Sufficient ventilation present"),
+        (permit.low_voltage_lighting, "Low voltage lighting present"),
+        (permit.low_voltage_equipment, "Equipment under low voltage"),
+        (permit.safe_working_conditions, "Safe working conditions agreed"),
+        (permit.ppe_in_use, "PPE in use"),
+        (permit.other_risks_examined, "Other risks examined")
+      ] %}
+      {% for val, label in checks %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if val %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Atmosphere Measurements</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#f3f4f6;">
+        <th style="padding:8px;border:1px solid #e5e7eb;">Date</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">O2</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">LEL</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">PPM</th>
+      </tr></thead>
+      <tbody>
+        {% for m in atm %}
+        <tr>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ m.date }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ m.time }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.o2 }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.lel }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;text-align:center;">{{ m.ppm }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Entry List</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:#f3f4f6;">
+        <th style="padding:8px;border:1px solid #e5e7eb;">Date</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Name</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time In</th>
+        <th style="padding:8px;border:1px solid #e5e7eb;">Time Out</th>
+      </tr></thead>
+      <tbody>
+        {% for e in entries %}
+        <tr>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.date }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.name }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.time_in }}</td>
+          <td style="padding:8px;border:1px solid #e5e7eb;">{{ e.time_out }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% elif permit.permit_type == 'hotwork' %}
+  <!-- HOTWORK FULL VIEW -->
+  {% set hw = permit.atm_measurements | fromjson if permit.atm_measurements else {} %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 1: Deliberation</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for key, label in [("risk_analysis","Risk analysis drawn up"),("working_method","Working method drawn up"),("safety_procedures","Safety procedures discussed"),("captain_approval","Captain/Officer approval given"),("crew_aware","All crew members aware"),("performer_tested","Performer knowledge tested")] %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if hw.get(key) %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 2: Preparation</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for key, label in [("workspace_cleared","Workspace cleared & protected"),("designated_location","Welding at designated location only"),("ppe_selected","PPE discussed and selected"),("materials_ok","Materials & PPE in good condition"),("fire_extinguisher","Fire extinguisher(s) on location"),("fire_retardant","Fire retardant blankets in use"),("fireguard_present","FireGuard notified"),("ventilation_ok","Sufficient ventilation present"),("fire_detection_isolated","Auto fire detection isolated / LOTO"),("first_aid_ready","First-aid equipment provided")] %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if hw.get(key) %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Section 3: Completion</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for key, label in [("waste_disposed","Waste disposed after completion"),("surfaces_cooled","Hot surfaces cooled down"),("area_supervised","Area supervised 2 hours after")] %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if hw.get(key) %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if hw.get('fireguard_name') or hw.get('project_leader_name') or hw.get('hseq_name') or hw.get('ship_responsible_name') %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#7f1d1d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Signatories</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      {% if hw.get('fireguard_name') %}<div><span style="font-size:12px;color:#6b7280;">FireGuard</span><div style="font-weight:600;">{{ hw.fireguard_name }}</div></div>{% endif %}
+      {% if hw.get('project_leader_name') %}<div><span style="font-size:12px;color:#6b7280;">Project Leader</span><div style="font-weight:600;">{{ hw.project_leader_name }}</div></div>{% endif %}
+      {% if hw.get('hseq_name') %}<div><span style="font-size:12px;color:#6b7280;">HSEQ Officer</span><div style="font-weight:600;">{{ hw.hseq_name }}</div></div>{% endif %}
+      {% if hw.get('ship_responsible_name') %}<div><span style="font-size:12px;color:#6b7280;">Person in Charge (Ship)</span><div style="font-weight:600;">{{ hw.ship_responsible_name }}</div></div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% elif permit.permit_type == 'hdr' %}
+  <!-- HDR FULL VIEW -->
+  {% set hdr = permit.atm_measurements | fromjson if permit.atm_measurements else {} %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#14532d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Work Type & Details</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><span style="font-size:12px;color:#6b7280;">Work Type</span>
+        <div style="font-weight:600;">
+          {% if hdr.get('work_type_paint') %}Paint Spraying{% endif %}
+          {% if hdr.get('work_type_hdr') %}High Pressure Cleaning{% endif %}
+          {% if hdr.get('work_type_both') %}Both{% endif %}
+        </div>
+      </div>
+      {% if hdr.get('supervisor_name') %}<div><span style="font-size:12px;color:#6b7280;">Supervisor</span><div style="font-weight:600;">{{ hdr.supervisor_name }}</div></div>{% endif %}
+      {% if hdr.get('contractor_name') %}<div><span style="font-size:12px;color:#6b7280;">Contractor / Worker(s)</span><div style="font-weight:600;">{{ hdr.contractor_name }}</div></div>{% endif %}
+      {% if hdr.get('products_used') %}<div><span style="font-size:12px;color:#6b7280;">Products Used</span><div style="font-weight:600;">{{ hdr.products_used }}</div></div>{% endif %}
+      {% if hdr.get('equipment_type') %}<div><span style="font-size:12px;color:#6b7280;">Equipment Type</span><div style="font-weight:600;">{{ hdr.equipment_type }}</div></div>{% endif %}
+      {% if hdr.get('wind_info') %}<div><span style="font-size:12px;color:#6b7280;">Wind Direction & Speed</span><div style="font-weight:600;">{{ hdr.wind_info }}</div></div>{% endif %}
+      {% if hdr.get('valid_until') %}<div><span style="font-size:12px;color:#6b7280;">Valid Until</span><div style="font-weight:600;">{{ hdr.valid_until }}</div></div>{% endif %}
+    </div>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#14532d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Hazards Acknowledged</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for key, label in [("hazard_fire","Fire & explosion hazard"),("hazard_mist","Mist / spray release"),("hazard_inhalation","Inhalation risk"),("hazard_skin","Skin & eye contact risk"),("hazard_noise","Noise hazard"),("hazard_env","Environmental contamination")] %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if hdr.get(key) %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#14532d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Precautionary Measures & PPE</h3>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for key, label in [("zone_marked","Work zone demarcated & signposted"),("ventilation_provided","Ventilation provided / working outdoors"),("no_ignition","No ignition sources nearby"),("extinguisher_present","Fire extinguisher(s) present"),("env_measures","Environmental measures in place"),("waste_disposal","Paint/solvent waste via certified channel"),("ppe_respiratory","Respiratory protection worn"),("ppe_eye","Eye protection worn"),("ppe_hearing","Hearing protection worn"),("ppe_gloves","Chemical resistant gloves worn"),("ppe_coverall","Protective overall worn"),("ppe_boots","Safety footwear worn"),("hose_checked","HD hose & couplings checked"),("pressure_set","Working pressure set correctly"),("no_aim_persons","Safety: NEVER aim at persons"),("equipment_approved","Equipment approved & maintained"),("grounding_ok","Equipment grounded"),("approved_zones","Work only in approved zones"),("neighbors_notified","Neighboring activities notified"),("water_drain_ok","HD water to collector, NOT sewer"),("emergency_known","Emergency number & first aid known"),("eye_wash_ready","Eye wash & rinse water present"),("stop_on_incident","Stop work immediately on incident")] %}
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;">
+        {% if hdr.get(key) %}<span style="color:#10b981;font-size:18px;">✅</span>{% else %}<span style="color:#ef4444;font-size:18px;">❌</span>{% endif %}
+        <span style="font-size:14px;">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% if hdr.get('performer_name') or hdr.get('hseq_name') or hdr.get('client_name') %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#14532d;margin:0 0 14px;font-size:14px;text-transform:uppercase;">Authorization</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      {% if hdr.get('performer_name') %}<div><span style="font-size:12px;color:#6b7280;">Performer</span><div style="font-weight:600;">{{ hdr.performer_name }}</div></div>{% endif %}
+      {% if hdr.get('hseq_name') %}<div><span style="font-size:12px;color:#6b7280;">HSEQ / Supervisor</span><div style="font-weight:600;">{{ hdr.hseq_name }}</div></div>{% endif %}
+      {% if hdr.get('client_name') %}<div><span style="font-size:12px;color:#6b7280;">Client / Permit Issuer</span><div style="font-weight:600;">{{ hdr.client_name }}</div></div>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {% if permit.remarks %}
+  <div style="padding:20px;border-bottom:1px solid #e5e7eb;">
+    <h3 style="color:#0b1f4d;margin:0 0 10px;font-size:14px;text-transform:uppercase;">Remarks</h3>
+    <p style="margin:0;color:#374151;">{{ permit.remarks }}</p>
+  </div>
+  {% endif %}
+
+  {% if permit.status == 'pending' and has_permission(user, 'employee_list_view') %}
+  <div style="padding:20px;background:#f9fafb;border-top:1px solid #e5e7eb;display:flex;gap:12px;justify-content:flex-end;">
+    <a href="/permits/{{ permit.id }}/approve" style="background:#10b981;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">✅ Approve</a>
+    <a href="/permits/{{ permit.id }}/reject" style="background:#ef4444;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">❌ Reject</a>
+  </div>
+  {% endif %}
+  {% if has_permission(user, 'admin_full_access') %}
+  <div style="padding:16px 20px;background:#fff5f5;border-top:1px solid #fee2e2;display:flex;justify-content:flex-end;">
+    <a href="/permits/{{ permit.id }}/delete" onclick="return confirm('Are you sure you want to delete this permit? This cannot be undone.')" style="background:#ef4444;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;">🗑️ Delete Permit</a>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endblock %}
